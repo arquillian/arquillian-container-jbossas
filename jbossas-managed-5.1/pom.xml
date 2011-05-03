@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-   <!-- Parent -->
-        <parent>
-                <groupId>org.jboss.arquillian.container</groupId>
-                <artifactId>arquillian-parent-jbossas</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
-                <relativePath>../pom.xml</relativePath>
-        </parent>
+    <!-- Parent -->
+    <parent>
+        <groupId>org.jboss.arquillian.container</groupId>
+        <artifactId>arquillian-parent-jbossas</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
 
     <!-- Model Version -->
     <modelVersion>4.0.0</modelVersion>
 
     <!-- Artifact Configuration -->
-    <groupId>org.jboss.arquillian.container</groupId>
     <artifactId>arquillian-jbossas-managed-5.1</artifactId>
     <name>Arquillian Container JBoss AS Managed 5.1.x</name>
     <description>JBoss AS 5.1.x Managed Container integration for the Arquillian Project</description>
@@ -24,83 +23,76 @@
     <properties>
 
         <!-- Versioning -->
+        <version.org.jboss.jbossas>5.1.0.GA</version.org.jboss.jbossas>
+        <version.org.jboss.jbossas_server-manager>1.0.3.GA</version.org.jboss.jbossas_server-manager>
+        <version.ejb3_api>3.1.0</version.ejb3_api>
 
     </properties>
 
     <!-- Dependencies -->
     <dependencies>
 
-        <!--
-    org.jboss.arquillian
-     -->
+        <!-- org.jboss.arquillian -->
         <dependency>
-            <groupId>org.jboss.arquillian</groupId>
-            <artifactId>arquillian-spi</artifactId>
-            <version>${project.version}</version>
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-container-spi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-container-test-spi</artifactId>
         </dependency>
         <dependency>
             <groupId>org.jboss.arquillian.protocol</groupId>
             <artifactId>arquillian-protocol-servlet</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jboss.arquillian.testenricher</groupId>
             <artifactId>arquillian-testenricher-ejb</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jboss.arquillian.testenricher</groupId>
             <artifactId>arquillian-testenricher-resource</artifactId>
-            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.testenricher</groupId>
+            <artifactId>arquillian-testenricher-initialcontext</artifactId>
         </dependency>
 
-        <!--
-    org.jboss
-     -->
+        <!-- org.jboss -->
 
         <dependency>
             <groupId>org.jboss.jbossas</groupId>
             <artifactId>jboss-server-manager</artifactId>
-            <version>1.0.3.GA</version>
+            <version>${version.org.jboss.jbossas_server-manager}</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.jboss.jbossas</groupId>
             <artifactId>jboss-as-client</artifactId>
-            <version>5.1.0.GA</version>
+            <version>${version.org.jboss.jbossas}</version>
             <type>pom</type>
-            <scope>provided</scope>            
+            <scope>provided</scope>
         </dependency>
 
-	<!-- Testing -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
+        <!-- Testing -->
+        <dependency>
+            <groupId>org.jboss.ejb3</groupId>
+            <artifactId>jboss-ejb3-api</artifactId>
+            <version>${version.ejb3_api}</version>
+            <scope>test</scope>
+        </dependency>
 
         <dependency>
-           <groupId>org.jboss.ejb3</groupId> 
-           <artifactId>jboss-ejb3-api</artifactId> 
-           <version>3.1.0</version>
-           <scope>test</scope>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
         </dependency>
-		<!-- TODO: needed by the CDIInjectionEnricher, ShrinkWrap fail to package the AuxiliaryArchive without it -->
-		<dependency>
-		   <groupId>javax.enterprise</groupId> 
-		   <artifactId>cdi-api</artifactId> 
-		   <version>1.0-SP1</version> 
-		   <scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.jboss.arquillian</groupId>
-			<artifactId>arquillian-junit</artifactId>
-			<version>${project.version}</version>
-			<scope>test</scope>
-		</dependency>
-
+        <dependency>
+            <groupId>org.jboss.arquillian.junit</groupId>
+            <artifactId>arquillian-junit-container</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>
 

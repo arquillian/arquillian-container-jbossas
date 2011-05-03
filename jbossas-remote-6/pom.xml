@@ -1,77 +1,79 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-   <!-- Parent -->
-        <parent>
-                <groupId>org.jboss.arquillian.container</groupId>
-                <artifactId>arquillian-parent-jbossas</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
-                <relativePath>../pom.xml</relativePath>
-        </parent>
+    <!-- Parent -->
+    <parent>
+        <groupId>org.jboss.arquillian.container</groupId>
+        <artifactId>arquillian-parent-jbossas</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
 
-   <!-- Model Version -->
-   <modelVersion>4.0.0</modelVersion>
+    <!-- Model Version -->
+    <modelVersion>4.0.0</modelVersion>
 
-   <!-- Artifact Configuration -->
-   <groupId>org.jboss.arquillian.container</groupId>
-   <artifactId>arquillian-jbossas-remote-6</artifactId>
-   <name>Arquillian Container JBoss AS Remote 6.x</name>
-   <description>JBoss AS 6.x Remote Container integration for the Arquillian Project</description>
+    <!-- Artifact Configuration -->
+    <artifactId>arquillian-jbossas-remote-6</artifactId>
+    <name>Arquillian Container JBoss AS Remote 6.x</name>
+    <description>JBoss AS 6.x Remote Container integration for the Arquillian Project</description>
 
 
-   <!-- Properties -->
-   <properties>
+    <!-- Properties -->
+    <properties>
 
-      <!-- Versioning -->
-      <version.org.jboss.jbossas>6.0.0.Final</version.org.jboss.jbossas>
+        <!-- Versioning -->
+        <version.org.jboss.jbossas>6.0.0.Final</version.org.jboss.jbossas>
 
-   </properties>
+    </properties>
 
-   <!-- Dependencies -->
-   <dependencies>
+    <!-- Dependencies -->
+    <dependencies>
 
-      <!-- 
-    org.jboss.arquillian
-     -->
-      <dependency>
-         <groupId>org.jboss.arquillian</groupId>
-         <artifactId>arquillian-spi</artifactId>
-         <version>${project.version}</version>
-      </dependency>
-      <dependency>
-         <groupId>org.jboss.arquillian.protocol</groupId>
-         <artifactId>arquillian-protocol-servlet</artifactId>
-         <version>${project.version}</version>
-      </dependency>
+        <!-- org.jboss.arquillian -->
+        <dependency>
+            <groupId>org.jboss.arquillian.core</groupId>
+            <artifactId>arquillian-core-spi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-container-spi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-container-test-spi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.protocol</groupId>
+            <artifactId>arquillian-protocol-servlet</artifactId>
+        </dependency>
 
-      <dependency>
-         <groupId>org.jboss.arquillian.testenricher</groupId>
-         <artifactId>arquillian-testenricher-cdi</artifactId>
-         <version>${project.version}</version>
-      </dependency>
-      <dependency>
-         <groupId>org.jboss.arquillian.testenricher</groupId>
-         <artifactId>arquillian-testenricher-ejb</artifactId>
-         <version>${project.version}</version>
-      </dependency>
-      <dependency>
-         <groupId>org.jboss.arquillian.testenricher</groupId>
-         <artifactId>arquillian-testenricher-resource</artifactId>
-         <version>${project.version}</version>
-      </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.testenricher</groupId>
+            <artifactId>arquillian-testenricher-cdi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.testenricher</groupId>
+            <artifactId>arquillian-testenricher-ejb</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.testenricher</groupId>
+            <artifactId>arquillian-testenricher-resource</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.testenricher</groupId>
+            <artifactId>arquillian-testenricher-initialcontext</artifactId>
+        </dependency>
 
-      <!-- 
-    org.jboss
-     -->
+        <!-- org.jboss -->
 
-      <dependency>
-         <groupId>org.jboss.jbossas</groupId>
-         <artifactId>jboss-as-client</artifactId>
-         <version>${version.org.jboss.jbossas}</version>
-         <type>pom</type>
-         <scope>provided</scope>
-      </dependency>
-   </dependencies>
+        <dependency>
+            <groupId>org.jboss.jbossas</groupId>
+            <artifactId>jboss-as-client</artifactId>
+            <version>${version.org.jboss.jbossas}</version>
+            <type>pom</type>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
 </project>
 
