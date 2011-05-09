@@ -26,6 +26,7 @@
    </properties>
 
    <modules>
+      <module>jbossas-managed-4.2</module>
       <module>jbossas-remote-4.2</module>
 
       <module>jbossas-remote-5</module>
