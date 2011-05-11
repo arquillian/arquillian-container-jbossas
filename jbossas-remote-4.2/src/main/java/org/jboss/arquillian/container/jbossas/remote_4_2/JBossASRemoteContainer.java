@@ -41,7 +41,6 @@ import org.jboss.arquillian.spi.client.container.DeploymentException;
 import org.jboss.arquillian.spi.client.container.LifecycleException;
 import org.jboss.arquillian.spi.client.protocol.ProtocolDescription;
 import org.jboss.arquillian.spi.client.protocol.metadata.ProtocolMetaData;
-import org.jboss.deployment.spi.DeploymentManagerImpl;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.descriptor.api.Descriptor;
 
@@ -115,7 +114,7 @@ public class JBossASRemoteContainer implements DeployableContainer<JBossASConfig
    private DeploymentManager createDeploymentManager() throws DeploymentManagerCreationException
    {
       DeploymentFactoryManager dfm = DeploymentFactoryManager.getInstance();
-      return dfm.getDeploymentManager(DeploymentManagerImpl.DEPLOYER_URI, null, null);
+      return dfm.getDeploymentManager(configuration.getProviderUrl(), null, null);
    }
 
    @Override
