@@ -75,7 +75,7 @@ public class JBossASLocalContainer implements DeployableContainer<JBossASConfigu
    public void setup(JBossASConfiguration configuration)
    {
       this.configuration = configuration;
-      this.serverManager = createAndConfigureServerManager();
+      this.serverManager = createAndConfigureServerManager(configuration);
    }
 
    @Override
@@ -96,6 +96,7 @@ public class JBossASLocalContainer implements DeployableContainer<JBossASConfigu
       try
       {
          Server server = serverManager.getServer(configuration.getProfileName());
+         
          if (ServerController.isServerStarted(server))
          {
             throw new LifecycleException(
@@ -106,9 +107,8 @@ public class JBossASLocalContainer implements DeployableContainer<JBossASConfigu
          }
 
          serverManager.startServer(server.getName());
-         server.getInitialContextFactoryClassName();
          
-         createContext();
+         createContext(server);
          deploymentManager = createDeploymentManager(server);
       }
       catch (Exception e)
@@ -146,14 +146,14 @@ public class JBossASLocalContainer implements DeployableContainer<JBossASConfigu
       }
    }
 
-   private Context createContext() throws NamingException
+   private Context createContext(Server server) throws NamingException
    {
       if (contextInst.get() == null)
       {
          Properties props = new Properties();
-         props.put(InitialContext.INITIAL_CONTEXT_FACTORY, configuration.getContextFactory());
+         props.put(InitialContext.INITIAL_CONTEXT_FACTORY, server.getInitialContextFactoryClassName());
          props.put(InitialContext.URL_PKG_PREFIXES, configuration.getUrlPkgPrefix());
-         props.put(InitialContext.PROVIDER_URL, configuration.getProviderUrl());
+         props.put(InitialContext.PROVIDER_URL, server.getServerUrl());
          contextInst.set(new InitialContext(props));
       }
       return contextInst.get();
@@ -292,7 +292,7 @@ public class JBossASLocalContainer implements DeployableContainer<JBossASConfigu
     * Internal Helpers for Creating and Configuring ServerManager and Server.
     */
    
-   private ServerManager createAndConfigureServerManager()
+   private ServerManager createAndConfigureServerManager(JBossASConfiguration configuration)
    {
       ServerManager manager = new ArquillianServerManager(
             configuration.getStartupTimeoutInSeconds(),
@@ -306,11 +306,11 @@ public class JBossASLocalContainer implements DeployableContainer<JBossASConfigu
       {
          manager.setJavaHome(configuration.getJavaHome());
       }
-      manager.addServer(createAndConfigureServer());
+      manager.addServer(createAndConfigureServer(configuration));
       return manager;
    }
 
-   private Server createAndConfigureServer()
+   private Server createAndConfigureServer(JBossASConfiguration configuration)
    {
       Server server = new Server();
       server.setName(configuration.getProfileName());
