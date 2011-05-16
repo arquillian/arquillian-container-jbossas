@@ -20,7 +20,7 @@
 			<property name="bindAddress">local2.dev.com</property>
 			<property name="httpPort">8280</property>
 			<property name="rmiPort">1299</property>
-			<property name="profileName">default/property>
+			<property name="profileName">default</property>
 		</configuration>
 	</container>
 	
