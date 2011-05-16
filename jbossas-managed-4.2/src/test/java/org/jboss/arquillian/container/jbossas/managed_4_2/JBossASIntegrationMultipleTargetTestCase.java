@@ -42,7 +42,7 @@ import org.junit.runner.RunWith;
  * @version $Revision: $
  */
 @RunWith(Arquillian.class)
-public class JBossASMIntegrationMultipleTargetTestCase
+public class JBossASIntegrationMultipleTargetTestCase
 {
    @Deployment(name = "dep1", order = 1)
    @TargetsContainer("jboss-i1")
@@ -67,7 +67,7 @@ public class JBossASMIntegrationMultipleTargetTestCase
                .addAsModule(
                      ShrinkWrap.create(JavaArchive.class, "test.jar")
                         .addClasses(
-                              JBossASMIntegrationMultipleTargetTestCase.class,
+                              JBossASIntegrationMultipleTargetTestCase.class,
                               MyEjb.class, MyEjbBean.class)
                          )
                 // we need to manually add the applications.xml file to the EAR
