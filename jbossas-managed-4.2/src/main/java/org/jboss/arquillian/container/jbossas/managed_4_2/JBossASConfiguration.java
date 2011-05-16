@@ -51,11 +51,7 @@ public class JBossASConfiguration implements ContainerConfiguration
 
    private int shutdownTimeoutInSeconds = 45;
    
-   private String contextFactory = "org.jnp.interfaces.NamingContextFactory";
-   
    private String urlPkgPrefix = "org.jboss.naming:org.jnp.interfaces";
-   
-   private String providerUrl = "jnp://localhost:1099";
    
    /* (non-Javadoc)
     * @see org.jboss.arquillian.spi.client.container.ContainerConfiguration#validate()
@@ -211,38 +207,6 @@ public class JBossASConfiguration implements ContainerConfiguration
    public void setShutdownTimeoutInSeconds(int shutdownTimeoutInSeconds)
    {
       this.shutdownTimeoutInSeconds = shutdownTimeoutInSeconds;
-   }
-   
-   /**
-    * @param contextFactory the contextFactory to set
-    */
-   public void setContextFactory(String contextFactory)
-   {
-      this.contextFactory = contextFactory;
-   }
-   
-   /**
-    * @return the contextFactory
-    */
-   public String getContextFactory()
-   {
-      return contextFactory;
-   }
-   
-   /**
-    * @param provierUrl the provierUrl to set
-    */
-   public void setProviderUrl(String provierUrl)
-   {
-      this.providerUrl = provierUrl;
-   }
-   
-   /**
-    * @return the provierUrl
-    */
-   public String getProviderUrl()
-   {
-      return providerUrl;
    }
    
    /**
