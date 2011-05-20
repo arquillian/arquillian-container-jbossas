@@ -1,27 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <arquillian xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://jboss.org/schema/arquillian http://jboss.org/schema/arquillian/arquillian-1.0.xsd">
-	
-	<container qualifier="jboss-i1" default="true">
-		<configuration>
-			<property name="jbossHome">/home/daltod/servers/jboss-4-i1</property>
-			<property name="javaHome">/usr/java/jdk6</property>
-			<property name="bindAddress">local1.dev.com</property>
-			<property name="httpPort">8180</property>
-			<property name="rmiPort">1199</property>
-			<property name="profileName">default</property>
-		</configuration>
-	</container>
 
-	<container qualifier="jboss-i2">
-		<configuration>
-			<property name="jbossHome">/home/daltod/servers/jboss-4-i2</property>
-			<property name="javaHome">/usr/java/jdk6</property>
-			<property name="bindAddress">local2.dev.com</property>
-			<property name="httpPort">8280</property>
-			<property name="rmiPort">1299</property>
-			<property name="profileName">default</property>
-		</configuration>
-	</container>
-	
+	<group qualifier="default">
+		<container qualifier="jboss-i1" default="true">
+			<configuration>
+				<property name="jbossHome">/home/davide/development/servers/jboss-4-i1</property>
+				<property name="javaHome">/opt/java/jdk6</property>
+				<property name="bindAddress">local1.dev.com</property>
+				<property name="httpPort">8180</property>
+				<property name="rmiPort">1199</property>
+				<property name="profileName">default</property>
+			</configuration>
+		</container>
+
+		<container qualifier="jboss-i2">
+			<configuration>
+				<property name="jbossHome">/home/davide/development/servers/jboss-4-i2</property>
+				<property name="javaHome">/opt/java/jdk6</property>
+				<property name="bindAddress">local2.dev.com</property>
+				<property name="httpPort">8280</property>
+				<property name="rmiPort">1299</property>
+				<property name="profileName">default</property>
+			</configuration>
+		</container>
+	</group>
 </arquillian>
