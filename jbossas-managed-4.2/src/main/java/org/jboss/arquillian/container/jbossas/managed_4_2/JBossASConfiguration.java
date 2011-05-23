@@ -18,10 +18,9 @@ package org.jboss.arquillian.container.jbossas.managed_4_2;
 
 import java.io.File;
 
-import org.jboss.arquillian.spi.ConfigurationException;
-import org.jboss.arquillian.spi.client.container.ContainerConfiguration;
-import org.jboss.arquillian.spi.client.deployment.Validate;
-
+import org.jboss.arquillian.container.spi.ConfigurationException;
+import org.jboss.arquillian.container.spi.client.container.ContainerConfiguration;
+import org.jboss.arquillian.container.spi.client.deployment.Validate;
 /**
  * A {@link org.jboss.arquillian.spi.client.container.ContainerConfiguration} implementation for
  * the JBoss AS container.
