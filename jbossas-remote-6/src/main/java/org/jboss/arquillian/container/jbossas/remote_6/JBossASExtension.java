@@ -17,9 +17,9 @@
  */
 package org.jboss.arquillian.container.jbossas.remote_6;
 
+import org.jboss.arquillian.container.spi.client.container.DeployableContainer;
+import org.jboss.arquillian.container.spi.client.container.DeploymentExceptionTransformer;
 import org.jboss.arquillian.core.spi.LoadableExtension;
-import org.jboss.arquillian.spi.client.container.DeployableContainer;
-import org.jboss.arquillian.spi.client.container.DeploymentExceptionTransformer;
 
 /**
  * JBossASExtension

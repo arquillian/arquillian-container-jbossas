@@ -20,8 +20,8 @@ import javax.ejb.EJB;
 
 import junit.framework.Assert;
 
-import org.jboss.arquillian.api.Deployment;
 import org.jboss.arquillian.container.jbossas.embedded_6.ejb.MyEjb;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;

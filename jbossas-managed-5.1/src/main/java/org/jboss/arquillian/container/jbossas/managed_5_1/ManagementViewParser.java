@@ -20,9 +20,9 @@ package org.jboss.arquillian.container.jbossas.managed_5_1;
 import java.util.Map;
 import java.util.Set;
 
-import org.jboss.arquillian.spi.client.protocol.metadata.HTTPContext;
-import org.jboss.arquillian.spi.client.protocol.metadata.ProtocolMetaData;
-import org.jboss.arquillian.spi.client.protocol.metadata.Servlet;
+import org.jboss.arquillian.container.spi.client.protocol.metadata.HTTPContext;
+import org.jboss.arquillian.container.spi.client.protocol.metadata.ProtocolMetaData;
+import org.jboss.arquillian.container.spi.client.protocol.metadata.Servlet;
 import org.jboss.deployers.spi.management.ManagementView;
 import org.jboss.managed.api.ManagedComponent;
 import org.jboss.managed.api.ManagedDeployment;

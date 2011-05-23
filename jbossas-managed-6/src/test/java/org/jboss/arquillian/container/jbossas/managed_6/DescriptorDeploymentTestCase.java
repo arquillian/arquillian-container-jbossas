@@ -20,8 +20,8 @@ package org.jboss.arquillian.container.jbossas.managed_6;
 import javax.annotation.Resource;
 import javax.jms.Queue;
 
-import org.jboss.arquillian.api.Deployment;
-import org.jboss.arquillian.api.OperateOnDeployment;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.OperateOnDeployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;

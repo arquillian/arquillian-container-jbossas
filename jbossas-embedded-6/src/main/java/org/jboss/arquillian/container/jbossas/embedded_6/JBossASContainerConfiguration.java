@@ -16,8 +16,8 @@
  */
 package org.jboss.arquillian.container.jbossas.embedded_6;
 
-import org.jboss.arquillian.spi.ConfigurationException;
-import org.jboss.arquillian.spi.client.container.ContainerConfiguration;
+import org.jboss.arquillian.container.spi.ConfigurationException;
+import org.jboss.arquillian.container.spi.client.container.ContainerConfiguration;
 
 /**
  * JBossContainerConfiguration

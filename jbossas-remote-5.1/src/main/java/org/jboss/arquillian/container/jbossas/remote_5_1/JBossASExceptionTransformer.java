@@ -19,7 +19,7 @@ package org.jboss.arquillian.container.jbossas.remote_5_1;
 
 import java.util.Map.Entry;
 
-import org.jboss.arquillian.spi.client.container.DeploymentExceptionTransformer;
+import org.jboss.arquillian.container.spi.client.container.DeploymentExceptionTransformer;
 import org.jboss.deployers.client.spi.IncompleteDeploymentException;
 
 /**

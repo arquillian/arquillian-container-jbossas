@@ -24,8 +24,8 @@ import javax.naming.NameNotFoundException;
 
 import junit.framework.Assert;
 
-import org.jboss.arquillian.spi.client.protocol.metadata.HTTPContext;
-import org.jboss.arquillian.spi.client.protocol.metadata.ProtocolMetaData;
+import org.jboss.arquillian.container.spi.client.protocol.metadata.HTTPContext;
+import org.jboss.arquillian.container.spi.client.protocol.metadata.ProtocolMetaData;
 import org.junit.Ignore;
 import org.junit.Test;
 

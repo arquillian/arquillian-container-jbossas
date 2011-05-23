@@ -21,11 +21,11 @@ import java.net.URL;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 
-import org.jboss.arquillian.spi.client.container.DeployableContainer;
-import org.jboss.arquillian.spi.client.container.DeploymentException;
-import org.jboss.arquillian.spi.client.container.LifecycleException;
-import org.jboss.arquillian.spi.client.protocol.ProtocolDescription;
-import org.jboss.arquillian.spi.client.protocol.metadata.ProtocolMetaData;
+import org.jboss.arquillian.container.spi.client.container.DeployableContainer;
+import org.jboss.arquillian.container.spi.client.container.DeploymentException;
+import org.jboss.arquillian.container.spi.client.container.LifecycleException;
+import org.jboss.arquillian.container.spi.client.protocol.ProtocolDescription;
+import org.jboss.arquillian.container.spi.client.protocol.metadata.ProtocolMetaData;
 import org.jboss.deployers.spi.management.deploy.DeploymentManager;
 import org.jboss.deployers.spi.management.deploy.DeploymentProgress;
 import org.jboss.deployers.spi.management.deploy.DeploymentStatus;

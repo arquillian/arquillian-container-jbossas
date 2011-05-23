@@ -22,8 +22,8 @@ import javax.naming.InitialContext;
 
 import junit.framework.Assert;
 
-import org.jboss.arquillian.spi.client.protocol.metadata.HTTPContext;
-import org.jboss.arquillian.spi.client.protocol.metadata.ProtocolMetaData;
+import org.jboss.arquillian.container.spi.client.protocol.metadata.HTTPContext;
+import org.jboss.arquillian.container.spi.client.protocol.metadata.ProtocolMetaData;
 import org.jboss.profileservice.spi.ProfileService;
 import org.junit.Ignore;
 import org.junit.Test;
