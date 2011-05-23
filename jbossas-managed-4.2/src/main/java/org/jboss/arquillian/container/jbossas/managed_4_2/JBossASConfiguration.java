@@ -21,6 +21,7 @@ import java.io.File;
 import org.jboss.arquillian.container.spi.ConfigurationException;
 import org.jboss.arquillian.container.spi.client.container.ContainerConfiguration;
 import org.jboss.arquillian.container.spi.client.deployment.Validate;
+
 /**
  * A {@link org.jboss.arquillian.spi.client.container.ContainerConfiguration} implementation for
  * the JBoss AS container.
@@ -35,33 +36,39 @@ public class JBossASConfiguration implements ContainerConfiguration
    private int httpPort = 8080;
 
    private int rmiPort = 1099;
-   
+
    private String profileName = "default";
 
    private boolean useRmiPortForAliveCheck = false;
-   
+
    private String jbossHome = System.getenv("JBOSS_HOME");
-   
+
    private String javaHome = System.getenv("JAVA_HOME");
-   
+
    private String javaVmArguments = "-Xmx512m -XX:MaxPermSize=128m";
 
    private int startupTimeoutInSeconds = 120;
 
    private int shutdownTimeoutInSeconds = 45;
-   
+
    private String urlPkgPrefix = "org.jboss.naming:org.jnp.interfaces";
-   
+
    /* (non-Javadoc)
     * @see org.jboss.arquillian.spi.client.container.ContainerConfiguration#validate()
     */
    @Override
    public void validate() throws ConfigurationException
    {
-      Validate.configurationDirectoryExists(jbossHome, "Either JBOSS_HOME environment variable or jbossHome property in Arquillian configuration must be set and point to a valid directory");
-      Validate.configurationDirectoryExists(javaHome, "Either JAVA_HOME environment variable or javaHome property in Arquillian configuration must be set and point to a valid directory");
+      Validate
+            .configurationDirectoryExists(
+                  jbossHome,
+                  "Either JBOSS_HOME environment variable or jbossHome property in Arquillian configuration must be set and point to a valid directory");
+      Validate
+            .configurationDirectoryExists(
+                  javaHome,
+                  "Either JAVA_HOME environment variable or javaHome property in Arquillian configuration must be set and point to a valid directory");
    }
-   
+
    public String getBindAddress()
    {
       return bindAddress;
@@ -96,7 +103,7 @@ public class JBossASConfiguration implements ContainerConfiguration
    {
       return rmiPort;
    }
-   
+
    /**
     * Set the RMI Connect port. <br/>
     * This is not the JBoss AS RMI Bind port, bind port must be set in the JBoss XML configuration.<br/>
@@ -128,7 +135,7 @@ public class JBossASConfiguration implements ContainerConfiguration
    {
       this.useRmiPortForAliveCheck = checkAliveUsingRmiPort;
    }
-   
+
    /**
     * @return the checkAliveUsingRmiPort
     */
@@ -141,26 +148,26 @@ public class JBossASConfiguration implements ContainerConfiguration
    {
       this.jbossHome = jbossHome;
    }
-   
+
    public String getJbossHome()
    {
-      if(jbossHome != null) 
+      if (jbossHome != null)
       {
          return new File(jbossHome).getAbsolutePath();
       }
       return jbossHome;
    }
-   
+
    public void setJavaHome(String javaHome)
    {
       this.javaHome = javaHome;
    }
-   
+
    public String getJavaHome()
    {
       return javaHome;
    }
-   
+
    /**
     * This will override the default ("-Xmx512m -XX:MaxPermSize=128m") startup JVM arguments. 
     * 
@@ -170,7 +177,7 @@ public class JBossASConfiguration implements ContainerConfiguration
    {
       this.javaVmArguments = javaVmArguments;
    }
-   
+
    public String getJavaVmArguments()
    {
       return javaVmArguments;
@@ -183,7 +190,7 @@ public class JBossASConfiguration implements ContainerConfiguration
    {
       return startupTimeoutInSeconds;
    }
-   
+
    /**
     * @param startupTimeoutInSeconds the startupTimeoutInSeconds to set
     */
@@ -207,7 +214,7 @@ public class JBossASConfiguration implements ContainerConfiguration
    {
       this.shutdownTimeoutInSeconds = shutdownTimeoutInSeconds;
    }
-   
+
    /**
     * @param urlPkgPrefix the urlPkgPrefix to set
     */
@@ -215,7 +222,7 @@ public class JBossASConfiguration implements ContainerConfiguration
    {
       this.urlPkgPrefix = urlPkgPrefix;
    }
-   
+
    /**
     * @return the urlPkgPrefix
     */
@@ -223,5 +230,5 @@ public class JBossASConfiguration implements ContainerConfiguration
    {
       return urlPkgPrefix;
    }
-   
+
 }

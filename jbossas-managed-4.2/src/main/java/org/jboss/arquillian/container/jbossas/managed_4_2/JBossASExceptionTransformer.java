@@ -20,7 +20,6 @@ package org.jboss.arquillian.container.jbossas.managed_4_2;
 import org.jboss.arquillian.container.spi.client.container.DeploymentExceptionTransformer;
 import org.jboss.deployment.IncompleteDeploymentException;
 
-
 /**
  * JBossASExceptionTransformer
  *
@@ -33,12 +32,12 @@ public class JBossASExceptionTransformer implements DeploymentExceptionTransform
    public Throwable transform(Throwable exception)
    {
       IncompleteDeploymentException incompleteDeploymentException = findIncompleteDeploymentException(exception);
-      return incompleteDeploymentException;   
+      return incompleteDeploymentException;
    }
-   
+
    private IncompleteDeploymentException findIncompleteDeploymentException(Throwable throwable)
    {
-      if(throwable == null)
+      if (throwable == null)
       {
          return null;
       }

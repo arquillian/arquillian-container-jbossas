@@ -19,7 +19,6 @@ package org.jboss.arquillian.container.jbossas.managed_4_2;
 
 import org.jboss.jbossas.servermanager.ServerManager;
 
-
 /**
  * Hack to override startup/shutdown timeouts of the ServerManager. 
  * 

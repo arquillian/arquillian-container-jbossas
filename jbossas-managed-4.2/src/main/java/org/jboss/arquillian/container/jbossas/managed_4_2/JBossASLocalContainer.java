@@ -63,14 +63,15 @@ public class JBossASLocalContainer implements DeployableContainer<JBossASConfigu
    private JBossASConfiguration configuration;
 
    private DeploymentManager deploymentManager;
-   
+
    protected ServerManager serverManager;
-   
-   @Inject @ContainerScoped
+
+   @Inject
+   @ContainerScoped
    private InstanceProducer<Context> contextInst;
-   
+
    private TargetModuleID[] targetModuleIDs = EMPTY_ARRAY;
-   
+
    @Override
    public void setup(JBossASConfiguration configuration)
    {
@@ -96,18 +97,17 @@ public class JBossASLocalContainer implements DeployableContainer<JBossASConfigu
       try
       {
          Server server = serverManager.getServer(configuration.getProfileName());
-         
+
          if (ServerController.isServerStarted(server))
          {
-            throw new LifecycleException(
-                  "The server is already running! " +
-                  "Managed containers does not support connecting to running server instances due to the " +
-                  "possible harmfull effect of connecting to the wrong server. Please stop server before running or " +
-                  "change to another type of container.");
+            throw new LifecycleException("The server is already running! "
+                  + "Managed containers does not support connecting to running server instances due to the "
+                  + "possible harmfull effect of connecting to the wrong server. Please stop server before running or "
+                  + "change to another type of container.");
          }
 
          serverManager.startServer(server.getName());
-         
+
          createContext(server);
          deploymentManager = createDeploymentManager(server);
       }
@@ -257,7 +257,7 @@ public class JBossASLocalContainer implements DeployableContainer<JBossASConfigu
          throw new LifecycleException("Could not stop server", e);
       }
    }
-   
+
    private DeploymentManager createDeploymentManager(Server server) throws DeploymentManagerCreationException
    {
       DeploymentFactoryManager dfm = DeploymentFactoryManager.getInstance();
@@ -268,7 +268,7 @@ public class JBossASLocalContainer implements DeployableContainer<JBossASConfigu
    {
       return StateType.COMPLETED != status.getState();
    }
-   
+
    /**
     * Wait for completion of a DeploymentStatus (wait as long as the "StateType" is "RUNNING")
     * 
@@ -287,15 +287,14 @@ public class JBossASLocalContainer implements DeployableContainer<JBossASConfigu
          throw new DeploymentException("Failed to deploy: " + e.getMessage());
       }
    }
-   
+
    /*
     * Internal Helpers for Creating and Configuring ServerManager and Server.
     */
-   
+
    private ServerManager createAndConfigureServerManager(JBossASConfiguration configuration)
    {
-      ServerManager manager = new ArquillianServerManager(
-            configuration.getStartupTimeoutInSeconds(),
+      ServerManager manager = new ArquillianServerManager(configuration.getStartupTimeoutInSeconds(),
             configuration.getShutdownTimeoutInSeconds());
 
       if (configuration.getJbossHome() != null)

@@ -32,7 +32,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
+			<configuration>
 					<skipTests>true</skipTests>
 				</configuration>
 			</plugin>
@@ -61,10 +61,6 @@
 		<dependency>
 			<groupId>org.jboss.arquillian.container</groupId>
 			<artifactId>arquillian-container-spi</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.arquillian.container</groupId>
-			<artifactId>arquillian-container-test-api</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.jboss.arquillian.container</groupId>

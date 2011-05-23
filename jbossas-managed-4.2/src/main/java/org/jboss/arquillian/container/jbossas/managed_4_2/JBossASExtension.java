@@ -32,7 +32,7 @@ public class JBossASExtension implements LoadableExtension
    @Override
    public void register(ExtensionBuilder builder)
    {
-      builder.service(DeployableContainer.class, org.jboss.arquillian.container.jbossas.managed_4_2.JBossASLocalContainer.class);
-      builder.service(DeploymentExceptionTransformer.class, org.jboss.arquillian.container.jbossas.managed_4_2.JBossASExceptionTransformer.class);
+      builder.service(DeployableContainer.class, JBossASLocalContainer.class);
+      builder.service(DeploymentExceptionTransformer.class, JBossASExceptionTransformer.class);
    }
 }
