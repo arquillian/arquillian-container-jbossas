@@ -17,7 +17,7 @@
  */
 package org.jboss.arquillian.container.jbossas.remote_4_2;
 
-import org.jboss.arquillian.spi.client.container.DeploymentExceptionTransformer;
+import org.jboss.arquillian.container.spi.client.container.DeploymentExceptionTransformer;
 import org.jboss.deployment.IncompleteDeploymentException;
 
 /**

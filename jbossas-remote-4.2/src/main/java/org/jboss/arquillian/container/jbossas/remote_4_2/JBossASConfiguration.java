@@ -16,8 +16,8 @@
  */
 package org.jboss.arquillian.container.jbossas.remote_4_2;
 
-import org.jboss.arquillian.spi.ConfigurationException;
-import org.jboss.arquillian.spi.client.container.ContainerConfiguration;
+import org.jboss.arquillian.container.spi.ConfigurationException;
+import org.jboss.arquillian.container.spi.client.container.ContainerConfiguration;
 
 /**
  * A {@link org.jboss.arquillian.spi.ContainerConfiguration} implementation for
