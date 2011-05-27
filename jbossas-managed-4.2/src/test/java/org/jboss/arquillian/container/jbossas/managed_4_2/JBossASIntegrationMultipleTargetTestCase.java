@@ -87,4 +87,15 @@ public class JBossASIntegrationMultipleTargetTestCase
       
       Assert.assertEquals("aslak", instanceVariable.getName());
    }
+
+   @Test
+   @OperateOnDeployment("dep2")
+   public void shouldBeAbleToInjectEJBAsInstanceVariableInOtherContainer() throws Exception 
+   {
+      Assert.assertNotNull(
+            "Verify that the Bean has been injected",
+            instanceVariable);
+      
+      Assert.assertEquals("aslak", instanceVariable.getName());
+   }
 }

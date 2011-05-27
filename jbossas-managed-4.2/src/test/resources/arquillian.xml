@@ -5,9 +5,7 @@
 	<group qualifier="default">
 		<container qualifier="jboss-i1" default="true">
 			<configuration>
-				<property name="jbossHome">/home/davide/development/servers/jboss-4-i1</property>
-				<property name="javaHome">/opt/java/jdk6</property>
-				<property name="bindAddress">local1.dev.com</property>
+				<property name="jbossHome">target/node1/jboss-4.2.3.GA/</property>
 				<property name="httpPort">8180</property>
 				<property name="rmiPort">1199</property>
 				<property name="profileName">default</property>
@@ -16,9 +14,7 @@
 
 		<container qualifier="jboss-i2">
 			<configuration>
-				<property name="jbossHome">/home/davide/development/servers/jboss-4-i2</property>
-				<property name="javaHome">/opt/java/jdk6</property>
-				<property name="bindAddress">local2.dev.com</property>
+				<property name="jbossHome">target/node2/jboss-4.2.3.GA/</property>
 				<property name="httpPort">8280</property>
 				<property name="rmiPort">1299</property>
 				<property name="profileName">default</property>
