@@ -27,6 +27,11 @@
 
         <!-- Versioning -->
         <version.arquillian_core>1.0.0.CR1-SNAPSHOT</version.arquillian_core>
+        
+        <!-- override from parent -->
+        <maven.compiler.target>1.6</maven.compiler.target>
+        <maven.compiler.source>1.6</maven.compiler.source>
+        
 
     </properties>
 
@@ -35,6 +40,13 @@
             <dependency>
                 <groupId>org.jboss.arquillian</groupId>
                 <artifactId>arquillian-bom</artifactId>
+                <version>${version.arquillian_core}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.arquillian</groupId>
+                <artifactId>arquillian-build</artifactId>
                 <version>${version.arquillian_core}</version>
                 <type>pom</type>
                 <scope>import</scope>
@@ -56,23 +68,5 @@
         <module>jbossas-remote-6</module>
     </modules>
 
-    <build>
-        <plugins>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <inherited>true</inherited>
-                <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
-                    <showDeprecation>false</showDeprecation>
-                    <showWarnings>true</showWarnings>
-                    <optimize>true</optimize>
-                    <compilerVersion>1.6</compilerVersion>
-                    <fork>true</fork>
-                    <argLine>-Xmx512M</argLine>
-                </configuration>
-            </plugin>
-        </plugins>    
-    </build>
 </project>
 
