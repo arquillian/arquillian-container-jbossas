@@ -29,11 +29,6 @@ import org.jboss.arquillian.container.spi.client.container.ContainerConfiguratio
  */
 public class JBossASConfiguration implements ContainerConfiguration
 {
-   /**
-    * ProfileService profileKey. Used to load the correct profile into the DeploymentManager.  
-    */
-   private String profileName = "default";
-      
    private String contextFactory = "org.jnp.interfaces.NamingContextFactory";
    
    private String urlPkgPrefix = "org.jboss.naming:org.jnp.interfaces";
@@ -48,16 +43,6 @@ public class JBossASConfiguration implements ContainerConfiguration
    {
    }
    
-   public String getProfileName()
-   {
-      return profileName;
-   }
-   
-   public void setProfileName(String profileName)
-   {
-      this.profileName = profileName;
-   }
-
    /**
     * @param contextFactory the contextFactory to set
     */

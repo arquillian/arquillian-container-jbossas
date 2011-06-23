@@ -47,6 +47,9 @@ import org.jboss.shrinkwrap.descriptor.api.Descriptor;
  */
 public class JBossASEmbeddedContainer implements DeployableContainer<JBossASContainerConfiguration>
 {
+   // ProfileKey name which supports hot deployment 
+   private static final String DEFAULT_PROFILE_KEY_NAME = "jboss:profile=applications";  
+    
    private JBossASEmbeddedServer server;
    private ProfileService profileService;
    private DeploymentManager deploymentManager;
@@ -173,13 +176,12 @@ public class JBossASEmbeddedContainer implements DeployableContainer<JBossASCont
 
    private void initDeploymentManager() throws Exception 
    {
-      String profileName = configuration.getProfileName();
       Context ctx = createContext();
       profileService = (ProfileService) ctx.lookup("ProfileService");
       
       deploymentManager = profileService.getDeploymentManager();
 
-      ProfileKey defaultKey = new ProfileKey(profileName);
+      ProfileKey defaultKey = new ProfileKey(DEFAULT_PROFILE_KEY_NAME);
       deploymentManager.loadProfile(defaultKey);
    }
    
