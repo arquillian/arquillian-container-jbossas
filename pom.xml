@@ -16,22 +16,27 @@
     <!-- Artifact Configuration -->
     <groupId>org.jboss.arquillian.container</groupId>
     <artifactId>arquillian-parent-jbossas</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0.CR1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Arquillian Container Parent JBoss AS</name>
     <description>JBoss AS Container integrations for the Arquillian Project</description>
 
+    <scm>
+        <connection>scm:git:git://git@github.com:arquillian/arquillian-container-jbossas.git</connection>
+        <developerConnection>scm:git:ssh://github.com/arquillian/arquillian-container-jbossas.git</developerConnection>
+        <url>git://github.com/arquillian/arquillian-container-jbossas.git</url>
+    </scm>
 
     <!-- Properties -->
     <properties>
 
         <!-- Versioning -->
-        <version.arquillian_core>1.0.0.CR1-SNAPSHOT</version.arquillian_core>
-        
+        <version.arquillian_core>1.0.0.CR1</version.arquillian_core>
+
         <!-- override from parent -->
-        <maven.compiler.target>1.6</maven.compiler.target>
-        <maven.compiler.source>1.6</maven.compiler.source>
-        
+        <version.release.plugin>2.1</version.release.plugin>
+        <maven.compiler.target>1.5</maven.compiler.target>
+        <maven.compiler.source>1.5</maven.compiler.source>
 
     </properties>
 
@@ -54,6 +59,19 @@
         </dependencies>
     </dependencyManagement>
 
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-release-plugin</artifactId>
+                <configuration>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <pushChanges>false</pushChanges>
+                    <localCheckout>true</localCheckout>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
     <modules>
         <module>jbossas-managed-4.2</module>
         <module>jbossas-remote-4.2</module>
@@ -69,4 +87,3 @@
     </modules>
 
 </project>
-
