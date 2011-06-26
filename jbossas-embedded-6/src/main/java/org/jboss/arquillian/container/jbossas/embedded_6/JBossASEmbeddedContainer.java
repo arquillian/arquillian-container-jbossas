@@ -26,6 +26,9 @@ import org.jboss.arquillian.container.spi.client.container.DeploymentException;
 import org.jboss.arquillian.container.spi.client.container.LifecycleException;
 import org.jboss.arquillian.container.spi.client.protocol.ProtocolDescription;
 import org.jboss.arquillian.container.spi.client.protocol.metadata.ProtocolMetaData;
+import org.jboss.arquillian.container.spi.context.annotation.ContainerScoped;
+import org.jboss.arquillian.core.api.InstanceProducer;
+import org.jboss.arquillian.core.api.annotation.Inject;
 import org.jboss.deployers.spi.management.deploy.DeploymentManager;
 import org.jboss.deployers.spi.management.deploy.DeploymentProgress;
 import org.jboss.deployers.spi.management.deploy.DeploymentStatus;
@@ -53,9 +56,9 @@ public class JBossASEmbeddedContainer implements DeployableContainer<JBossASCont
    private JBossASEmbeddedServer server;
    private ProfileService profileService;
    private DeploymentManager deploymentManager;
-   private InitialContext context;
    
-   private JBossASContainerConfiguration configuration;
+   @Inject @ContainerScoped
+   private InstanceProducer<Context> contextInst;
    
    /* (non-Javadoc)
     * @see org.jboss.arquillian.spi.client.container.DeployableContainer#getDefaultProtocol()
@@ -81,8 +84,6 @@ public class JBossASEmbeddedContainer implements DeployableContainer<JBossASCont
    @Override
    public void setup(JBossASContainerConfiguration configuration)
    {
-      this.configuration = configuration;
-
       server = JBossASEmbeddedServerFactory.createServer();
       server.getConfiguration()
                .bindAddress(configuration.getBindAddress())
@@ -185,13 +186,13 @@ public class JBossASEmbeddedContainer implements DeployableContainer<JBossASCont
       deploymentManager.loadProfile(defaultKey);
    }
    
-   private InitialContext createContext() throws Exception
+   private Context createContext() throws Exception
    {
-      if(context == null)
+      if(contextInst.get() == null)
       {
-         context = new InitialContext();
+         contextInst.set(new InitialContext());
       }
-      return context;
+      return contextInst.get();
    }
    
    private void deploy(String deploymentName, URL url) throws DeploymentException

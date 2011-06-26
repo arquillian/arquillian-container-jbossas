@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import javax.naming.Context;
 import javax.naming.InitialContext;
 
 import org.jboss.arquillian.container.spi.client.container.DeployableContainer;
@@ -29,6 +30,9 @@ import org.jboss.arquillian.container.spi.client.container.DeploymentException;
 import org.jboss.arquillian.container.spi.client.container.LifecycleException;
 import org.jboss.arquillian.container.spi.client.protocol.ProtocolDescription;
 import org.jboss.arquillian.container.spi.client.protocol.metadata.ProtocolMetaData;
+import org.jboss.arquillian.container.spi.context.annotation.ContainerScoped;
+import org.jboss.arquillian.core.api.InstanceProducer;
+import org.jboss.arquillian.core.api.annotation.Inject;
 import org.jboss.deployers.spi.management.deploy.DeploymentManager;
 import org.jboss.deployers.spi.management.deploy.DeploymentProgress;
 import org.jboss.deployers.spi.management.deploy.DeploymentStatus;
@@ -52,9 +56,11 @@ public class JBossASRemoteContainer implements DeployableContainer<JBossASConfig
    private final List<String> failedUndeployments = new ArrayList<String>();
    private ProfileService profileService;
    private DeploymentManager deploymentManager;
-   private InitialContext context;
 
    private JBossASConfiguration configuration;
+
+   @Inject @ContainerScoped
+   private InstanceProducer<Context> contextInst;
    
    @Override
    public ProtocolDescription getDefaultProtocol()
@@ -195,7 +201,7 @@ public class JBossASRemoteContainer implements DeployableContainer<JBossASConfig
 
    private void initDeploymentManager() throws Exception 
    {
-      InitialContext ctx = createContext();
+      Context ctx = createContext();
       profileService = (ProfileService) ctx.lookup("ProfileService");
       deploymentManager = profileService.getDeploymentManager();
       
@@ -204,17 +210,17 @@ public class JBossASRemoteContainer implements DeployableContainer<JBossASConfig
       VFS.init();
    }
    
-   private InitialContext createContext() throws Exception
+   private Context createContext() throws Exception
    {
-      if(context == null)
+      if(contextInst.get() == null)
       {
          Properties props = new Properties();
          props.put(InitialContext.INITIAL_CONTEXT_FACTORY, configuration.getContextFactory());
          props.put(InitialContext.URL_PKG_PREFIXES, configuration.getUrlPkgPrefix());
          props.put(InitialContext.PROVIDER_URL, configuration.getProviderUrl());
-         context = new InitialContext(props);
+         contextInst.set(new InitialContext(props));
       }
-      return context;
+      return contextInst.get();
    }
 
    private void removeFailedUnDeployments() throws IOException

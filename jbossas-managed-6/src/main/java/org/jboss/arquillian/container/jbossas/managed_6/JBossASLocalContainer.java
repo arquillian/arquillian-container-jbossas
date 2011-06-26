@@ -30,6 +30,9 @@ import org.jboss.arquillian.container.spi.client.container.DeploymentException;
 import org.jboss.arquillian.container.spi.client.container.LifecycleException;
 import org.jboss.arquillian.container.spi.client.protocol.ProtocolDescription;
 import org.jboss.arquillian.container.spi.client.protocol.metadata.ProtocolMetaData;
+import org.jboss.arquillian.container.spi.context.annotation.ContainerScoped;
+import org.jboss.arquillian.core.api.InstanceProducer;
+import org.jboss.arquillian.core.api.annotation.Inject;
 import org.jboss.deployers.spi.management.deploy.DeploymentManager;
 import org.jboss.deployers.spi.management.deploy.DeploymentProgress;
 import org.jboss.deployers.spi.management.deploy.DeploymentStatus;
@@ -65,6 +68,9 @@ public class JBossASLocalContainer implements DeployableContainer<JBossASConfigu
    private ProfileService profileService;
    private DeploymentManager deploymentManager;
    
+   @Inject @ContainerScoped
+   private InstanceProducer<Context> contextInst;
+
    @Override
    public ProtocolDescription getDefaultProtocol()
    {
@@ -259,6 +265,7 @@ public class JBossASLocalContainer implements DeployableContainer<JBossASConfigu
    private void initProfileService(Server server) throws Exception 
    {
       Context ctx = server.getNamingContext();
+      contextInst.set(ctx);
       profileService = (ProfileService) ctx.lookup("ProfileService");
 
       deploymentManager = profileService.getDeploymentManager();
