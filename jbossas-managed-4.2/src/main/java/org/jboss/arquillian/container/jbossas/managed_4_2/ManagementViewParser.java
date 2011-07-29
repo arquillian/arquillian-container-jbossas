@@ -58,7 +58,7 @@ public final class ManagementViewParser
    }
 
    private static void scanDeployment(MBeanServerConnection connection, HTTPContext httpContext, String archiveName)
-         throws Exception
+      throws Exception
    {
       ObjectName earExpression = new ObjectName("*:*,J2EEApplication=" + archiveName);
       Set<ObjectName> deployments = connection.queryNames(earExpression, null);
@@ -69,10 +69,17 @@ public final class ManagementViewParser
             scanWar(connection, httpContext, deployment);
          }
       }
+
+      ObjectName warExpression = new ObjectName("*:*,J2EEApplication=null,j2eeType=WebModule,name=" + archiveName);
+      Set<ObjectName> warDeployments = connection.queryNames(warExpression, null);
+      for(ObjectName warDeployment : warDeployments)
+      {
+         scanWar(connection, httpContext, warDeployment);
+      }
    }
 
    private static void scanWar(MBeanServerConnection connection, HTTPContext httpContext, ObjectName war)
-         throws Exception
+      throws Exception
    {
       String descriptor = (String) connection.getAttribute(war, "deploymentDescriptor");
       List<String> servletNames = extractServletNames(descriptor);
@@ -92,12 +99,12 @@ public final class ManagementViewParser
    private static HTTPContext extractHTTPContext(MBeanServerConnection connection) throws Exception
    {
       Set<ObjectName> connectors = connection.queryNames(new ObjectName("jboss.web:*,type=Connector"), null);
-      for (ObjectName connector : connectors)
+      for(ObjectName connector : connectors)
       {
-         String protocol = (String) connection.getAttribute(connector, "protocol");
-         if (protocol.contains("HTTP"))
+         String protocol = (String)connection.getAttribute(connector, "protocol");
+         if(protocol.contains("HTTP"))
          {
-            String address = ((InetAddress) connection.getAttribute(connector, "address")).getHostAddress();
+            String address = ((InetAddress)connection.getAttribute(connector, "address")).getHostAddress();
             Integer port = Integer.parseInt(connector.getKeyProperty("port"));
             return new HTTPContext(address, port);
          }

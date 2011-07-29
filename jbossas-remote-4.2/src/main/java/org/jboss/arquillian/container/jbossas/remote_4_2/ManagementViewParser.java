@@ -69,6 +69,13 @@ public final class ManagementViewParser
             scanWar(connection, httpContext, deployment);
          }
       }
+
+      ObjectName warExpression = new ObjectName("*:*,J2EEApplication=null,j2eeType=WebModule,name=" + archiveName);
+      Set<ObjectName> warDeployments = connection.queryNames(warExpression, null);
+      for(ObjectName warDeployment : warDeployments)
+      {
+         scanWar(connection, httpContext, warDeployment);
+      }
    }
 
    private static void scanWar(MBeanServerConnection connection, HTTPContext httpContext, ObjectName war)

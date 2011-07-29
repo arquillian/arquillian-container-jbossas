@@ -14,12 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.arquillian.container.jbossas.remote_4_2;
+package org.jboss.arquillian.container.jbossas.managed_4_2;
 
 import javax.ejb.EJB;
 
-import org.jboss.arquillian.container.jbossas.remote_4_2.ejb.MyEjb;
-import org.jboss.arquillian.container.jbossas.remote_4_2.ejb.MyEjbBean;
+import org.jboss.arquillian.container.jbossas.managed_4_2.ejb.MyEjb;
+import org.jboss.arquillian.container.jbossas.managed_4_2.ejb.MyEjbBean;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -40,7 +40,7 @@ import org.junit.runner.RunWith;
  * @version $Revision: $
  */
 @RunWith(Arquillian.class)
-public class JBossASIntegrationTestCase
+public class JBossASIntegrationEarTestCase
 {
    @Deployment
    public static EnterpriseArchive createDeployment() throws Exception 
@@ -52,7 +52,7 @@ public class JBossASIntegrationTestCase
                .addAsModule(
                      ShrinkWrap.create(JavaArchive.class, "test.jar")
                         .addClasses(
-                              JBossASIntegrationTestCase.class,
+                              JBossASIntegrationEarTestCase.class,
                               MyEjb.class, MyEjbBean.class)
                          )
                .setApplicationXML(new StringAsset(applicationXml));
