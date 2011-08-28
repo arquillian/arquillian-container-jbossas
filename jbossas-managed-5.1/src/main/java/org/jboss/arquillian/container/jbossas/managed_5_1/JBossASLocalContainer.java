@@ -25,6 +25,7 @@ import java.util.logging.Logger;
 
 import javax.naming.Context;
 
+import org.jboss.arquillian.container.jbossas.managed_5_1.JBossASConfiguration.JBossBindingSet;
 import org.jboss.arquillian.container.spi.client.container.DeployableContainer;
 import org.jboss.arquillian.container.spi.client.container.DeploymentException;
 import org.jboss.arquillian.container.spi.client.container.LifecycleException;
@@ -299,8 +300,8 @@ public class JBossASLocalContainer implements DeployableContainer<JBossASConfigu
    {
       Server server = new Server();
       server.setName(configuration.getProfileName());
-      server.setHttpPort(configuration.getHttpPort());
-      server.setRmiPort(configuration.getRmiPort());
+      server.setHttpPort(httpPort());
+      server.setRmiPort(rmiPort());
       server.setHost(configuration.getBindAddress());
       server.setHasWebServer(!configuration.isUseRmiPortForAliveCheck());
       
@@ -309,7 +310,7 @@ public class JBossASLocalContainer implements DeployableContainer<JBossASConfigu
       server.setPartition(Long.toHexString(System.currentTimeMillis()));
 
       // Set server's JVM arguments
-      setServerVMArgs(server, configuration.getJavaVmArguments());
+      setServerVMArgs(server, javaVmArguments());
 
       // Set server's system properties
       Property prop = new Property();
@@ -322,6 +323,39 @@ public class JBossASLocalContainer implements DeployableContainer<JBossASConfigu
       server.addSysProperty(prop);
       
       return server;
+   }
+
+   private int httpPort()
+   {
+      JBossBindingSet jbossBindingSet = getJBossBindingSet();
+      if (jbossBindingSet == null)
+         return configuration.getHttpPort();
+
+      return jbossBindingSet.getHttpPort();
+   }
+
+   private int rmiPort()
+   {
+      JBossBindingSet jbossBindingSet = getJBossBindingSet();
+      if (jbossBindingSet == null)
+         return configuration.getRmiPort();
+
+      return jbossBindingSet.getRmiPort();
+   }
+
+   private JBossBindingSet getJBossBindingSet()
+   {
+      return JBossBindingSet.getBindingSet(configuration.getPortBindingSet());
+   }
+
+   private String javaVmArguments()
+   {
+      String javaVmArguments = configuration.getJavaVmArguments();
+      if (configuration.getPortBindingSet() != null)
+      {
+         javaVmArguments += " -Djboss.service.binding.set=" + configuration.getPortBindingSet();
+      }
+      return javaVmArguments;
    }
 
    private void setServerVMArgs(Server server, String arguments)
