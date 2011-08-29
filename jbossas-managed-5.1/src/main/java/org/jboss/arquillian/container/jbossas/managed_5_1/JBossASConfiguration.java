@@ -17,6 +17,7 @@
 package org.jboss.arquillian.container.jbossas.managed_5_1;
 
 import java.io.File;
+import java.util.HashMap;
 
 import org.jboss.arquillian.container.spi.ConfigurationException;
 import org.jboss.arquillian.container.spi.client.container.ContainerConfiguration;
@@ -39,6 +40,8 @@ public class JBossASConfiguration implements ContainerConfiguration
    
    private String profileName = "default";
 
+   private String portBindingSet = null;
+
    private boolean useRmiPortForAliveCheck = false;
    
    private String jbossHome = System.getenv("JBOSS_HOME");
@@ -50,6 +53,46 @@ public class JBossASConfiguration implements ContainerConfiguration
    private int startupTimeoutInSeconds = 120;
 
    private int shutdownTimeoutInSeconds = 45;
+
+   enum JBossBindingSet {
+      PORTS_01("ports-01", 100),
+      PORTS_02("ports-02", 200),
+      PORTS_03("ports-03", 300);
+
+      private final String name;
+      private final int rmiPort;
+      private final int httpPort;
+
+      private static final HashMap<String, JBossBindingSet> bindings = new HashMap<String, JBossBindingSet>();
+      
+      static
+      {
+         for (JBossBindingSet binding : values())
+         {
+            bindings.put(binding.name, binding);
+         }
+      }
+
+      static JBossBindingSet getBindingSet(String name)
+      {
+         return bindings.get(name);
+      }
+
+      private JBossBindingSet(String name, int offSet)
+      {
+         this.name = name;
+         this.rmiPort = 1099 + offSet;
+         this.httpPort = 8080 + offSet;
+      }
+
+      int getRmiPort() {
+         return rmiPort;
+      }
+
+      int getHttpPort() {
+         return httpPort;
+      }
+   }
 
    /* (non-Javadoc)
     * @see org.jboss.arquillian.spi.client.container.ContainerConfiguration#validate()
@@ -74,6 +117,16 @@ public class JBossASConfiguration implements ContainerConfiguration
    public int getHttpPort()
    {
       return httpPort;
+   }
+
+   public String getPortBindingSet()
+   {
+      return portBindingSet;
+   }
+
+   public void setPortBindingSet(String portBindingSet)
+   {
+      this.portBindingSet = portBindingSet;
    }
 
    /**
