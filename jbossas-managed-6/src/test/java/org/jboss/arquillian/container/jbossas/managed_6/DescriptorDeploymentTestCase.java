@@ -54,7 +54,7 @@ public class DescriptorDeploymentTestCase
    		"    \n" + 
    		"</configuration>";
    
-   @Deployment(order = 1)
+   @Deployment(name = DEP, order = 1)
    public static Descriptor createQueue() 
    {
       // we have no JMSDescriptor, but importing as any other should export it clean.
@@ -62,7 +62,7 @@ public class DescriptorDeploymentTestCase
       return Descriptors.importAs(PersistenceDescriptor.class, "test-hornetq-jms.xml").from(TEST_QUEUE_DEF);
    }
    
-   @Deployment(order = 2, name = DEP)
+   @Deployment(name = DEP, order = 2)
    public static JavaArchive createTest()
    {
       return ShrinkWrap.create(JavaArchive.class);
