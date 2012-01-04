@@ -308,7 +308,13 @@ public class JBossASLocalContainer implements DeployableContainer<JBossASConfigu
       
       server.setUsername("admin");
       server.setPassword("admin");
-      server.setPartition(Long.toHexString(System.currentTimeMillis()));
+      
+      if (configuration.getPartition() != null) {
+          server.setPartition(configuration.getPartition());
+      }
+      else {
+          server.setPartition(Long.toHexString(System.currentTimeMillis()));
+      }
 
       // Set server's JVM arguments
       setServerVMArgs(server, javaVmArguments());
