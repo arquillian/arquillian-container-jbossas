@@ -39,6 +39,8 @@ public class JBossASConfiguration implements ContainerConfiguration
    private int rmiPort = 1099;
 
    private String profileName = "default";
+   
+   private String partition = null;
 
    private String portBindingSet = null;
 
@@ -168,6 +170,16 @@ public class JBossASConfiguration implements ContainerConfiguration
    public void setProfileName(String profileName)
    {
       this.profileName = profileName;
+   }
+   
+   public String getPartition()
+   {
+      return partition;
+   }
+
+   public void setPartition(String partition)
+   {
+      this.partition = partition;
    }
 
    /**
