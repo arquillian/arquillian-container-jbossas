@@ -96,6 +96,13 @@ public class JBossASConfiguration implements ContainerConfiguration
       }
    }
 
+   public JBossASConfiguration() {
+       // if no javaHome set, reuse this Java JVM
+       if (javaHome == null || javaHome.isEmpty()) {
+           javaHome = System.getProperty("java.home");
+       }
+   }
+    
    /* (non-Javadoc)
     * @see org.jboss.arquillian.spi.client.container.ContainerConfiguration#validate()
     */

@@ -53,7 +53,14 @@ public class JBossASConfiguration implements ContainerConfiguration
    private int shutdownTimeoutInSeconds = 45;
    
    private String urlPkgPrefix = "org.jboss.naming:org.jnp.interfaces";
-   
+
+   public JBossASConfiguration() {
+       // if no javaHome set, reuse this Java JVM
+       if (javaHome == null || javaHome.isEmpty()) {
+           javaHome = System.getProperty("java.home");
+       }
+   }
+
    /* (non-Javadoc)
     * @see org.jboss.arquillian.spi.client.container.ContainerConfiguration#validate()
     */
