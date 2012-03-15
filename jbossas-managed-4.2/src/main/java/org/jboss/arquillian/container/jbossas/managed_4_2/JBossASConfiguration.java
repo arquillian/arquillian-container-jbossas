@@ -51,8 +51,10 @@ public class JBossASConfiguration implements ContainerConfiguration
    private int startupTimeoutInSeconds = 120;
 
    private int shutdownTimeoutInSeconds = 45;
-   
-   private String urlPkgPrefix = "org.jboss.naming:org.jnp.interfaces";
+
+   private String username = "admin";
+
+   private String password = "admin";
 
    public JBossASConfiguration() {
        // if no javaHome set, reuse this Java JVM
@@ -226,21 +228,40 @@ public class JBossASConfiguration implements ContainerConfiguration
    {
       this.shutdownTimeoutInSeconds = shutdownTimeoutInSeconds;
    }
-   
+
    /**
-    * @param urlPkgPrefix the urlPkgPrefix to set
+    * @return the password
     */
-   public void setUrlPkgPrefix(String urlPkgPrefix)
+   public String getPassword()
    {
-      this.urlPkgPrefix = urlPkgPrefix;
+      return password;
    }
-   
+
    /**
-    * @return the urlPkgPrefix
+    * The username to use for authorization against a secured server
+    *
+    * @param password the password to set
     */
-   public String getUrlPkgPrefix()
+   public void setPassword(String password)
    {
-      return urlPkgPrefix;
+      this.password = password;
    }
-   
+
+   /**
+    * @return the username
+    */
+   public String getUsername()
+   {
+      return username;
+   }
+
+   /**
+    * The password to use for authorization against a secured server
+    *
+    * @param username the username to set
+    */
+   public void setUsername(String username)
+   {
+      this.username = username;
+   }
 }
