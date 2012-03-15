@@ -173,11 +173,11 @@ public class JBossASLocalContainer implements DeployableContainer<JBossASConfigu
       }
 
       DeploymentStatus status = progress.getDeploymentStatus();
+      waitForCompletion(status);
       if (status.getState() == StateType.FAILED)
       {
          throw new DeploymentException("Failed to deploy " + deployment.getName() + ": " + status.getMessage());
       }
-      waitForCompletion(status);
 
       // Start the modules whose IDs are returned by the "distribute" operation.:
       TargetModuleID[] moduleIDs = progress.getResultTargetModuleIDs();
