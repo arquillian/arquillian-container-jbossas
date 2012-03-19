@@ -98,7 +98,7 @@ public class JBossASConfiguration implements ContainerConfiguration
 
    public JBossASConfiguration() {
        // if no javaHome set, reuse this Java JVM
-       if (javaHome == null || javaHome.isEmpty()) {
+       if (javaHome == null || "".equals(javaHome)) {
            javaHome = System.getProperty("java.home");
        }
    }
