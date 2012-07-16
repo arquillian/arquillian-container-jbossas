@@ -17,6 +17,9 @@
  */
 package org.jboss.arquillian.container.jbossas.managed_6;
 
+import java.io.IOException;
+import java.io.OutputStream;
+
 import javax.annotation.Resource;
 import javax.jms.Queue;
 
@@ -26,8 +29,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.descriptor.api.Descriptor;
-import org.jboss.shrinkwrap.descriptor.api.Descriptors;
-import org.jboss.shrinkwrap.descriptor.api.spec.jpa.persistence.PersistenceDescriptor;
+import org.jboss.shrinkwrap.descriptor.api.DescriptorExportException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -57,9 +59,36 @@ public class DescriptorDeploymentTestCase
    @Deployment(name = DEP, order = 1)
    public static Descriptor createQueue() 
    {
-      // we have no JMSDescriptor, but importing as any other should export it clean.
+      // we have no JMSDescriptor
       // TODO: create a Generic Descriptor type.
-      return Descriptors.importAs(PersistenceDescriptor.class, "test-hornetq-jms.xml").from(TEST_QUEUE_DEF);
+      return new Descriptor()
+      {
+         @Override
+         public String getDescriptorName()
+         {
+            return "test-hornetq-jms.xml";
+         }
+
+         @Override
+         public void exportTo(OutputStream output)
+               throws DescriptorExportException, IllegalArgumentException
+         {
+            try
+            {
+               output.write(TEST_QUEUE_DEF.getBytes("UTF-8"));
+            }
+            catch (IOException e)
+            {
+               throw new DescriptorExportException(e.getMessage(), e);
+            }
+         }
+
+         @Override
+         public String exportAsString() throws DescriptorExportException
+         {
+            return TEST_QUEUE_DEF;
+         }
+      };
    }
    
    @Deployment(name = DEP, order = 2)

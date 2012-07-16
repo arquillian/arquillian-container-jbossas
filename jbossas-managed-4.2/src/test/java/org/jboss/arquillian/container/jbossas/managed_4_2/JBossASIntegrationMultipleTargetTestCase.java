@@ -29,7 +29,7 @@ import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.descriptor.api.Descriptors;
-import org.jboss.shrinkwrap.descriptor.api.spec.ee.application.ApplicationDescriptor;
+import org.jboss.shrinkwrap.descriptor.api.application5.ApplicationDescriptor;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -61,7 +61,7 @@ public class JBossASIntegrationMultipleTargetTestCase
    private static EnterpriseArchive createDeployment() throws Exception 
    {
       String applicationXml = Descriptors.create(ApplicationDescriptor.class, "application.xml")
-            .ejbModule("test.jar").exportAsString();
+            .createModule().ejb("test.jar").up().exportAsString();
       
       return ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
                .addAsModule(
