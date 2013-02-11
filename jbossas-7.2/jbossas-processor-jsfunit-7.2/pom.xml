@@ -31,39 +31,14 @@
      -->
 
     <parent>
-        <groupId>org.jboss.as</groupId>
-        <artifactId>jboss-as-arquillian</artifactId>
-        <version>7.2.0.Alpha1-SNAPSHOT</version>
+        <groupId>org.jboss.arquillian.container</groupId>
+        <artifactId>arquillian-jbossas-parent-7.2</artifactId>
+        <version>1.0.0.Final-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <groupId>org.jboss.as</groupId>
-    <artifactId>jboss-as-arquillian-protocol-servlet</artifactId>
-
-    <name>JBoss Application Server: Arquillian Protocol Servlet</name>
-
+    <artifactId>arquillian-jbossas-processor-jsfunit-7.2</artifactId>
+    <name>Arquillian Container JBoss AS JSFUnit Processor 7.2</name>
     <packaging>jar</packaging>
-    
-    <dependencies>
-        <dependency>
-            <groupId>org.jboss.arquillian.core</groupId>
-            <artifactId>arquillian-core-spi</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.arquillian.protocol</groupId>
-            <artifactId>arquillian-protocol-jmx</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.jsfunit</groupId>
-            <artifactId>jboss-jsfunit-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.shrinkwrap</groupId>
-            <artifactId>shrinkwrap-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.spec.javax.servlet</groupId>
-            <artifactId>jboss-servlet-api_3.0_spec</artifactId>
-        </dependency>
-    </dependencies>
     
 </project>

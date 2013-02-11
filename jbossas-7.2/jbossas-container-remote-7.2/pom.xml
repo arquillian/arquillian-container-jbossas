@@ -27,16 +27,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.jboss.as</groupId>
-        <artifactId>jboss-as-arquillian</artifactId>
-        <version>7.2.0.Alpha1-SNAPSHOT</version>
+        <groupId>org.jboss.arquillian.container</groupId>
+        <artifactId>arquillian-jbossas-parent-7.2</artifactId>
+        <version>1.0.0.Final-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <groupId>org.jboss.as</groupId>
-    <artifactId>jboss-as-arquillian-container-domain-remote</artifactId>
-
-    <name>JBoss Application Server: Arquillian Remote Domain Container</name>
-
+	<artifactId>arquillian-jbossas-container-remote-7.2</artifactId>
+	<name>Arquillian Container JBoss AS Container Remote 7.2</name>
     <packaging>jar</packaging>
 
     <properties>
@@ -47,8 +45,14 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.jboss.as</groupId>
-            <artifactId>jboss-as-arquillian-common-domain</artifactId>
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-jbossas-common-7.2</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-jbossas-protocol-jmx-7.2</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jboss.arquillian.junit</groupId>
@@ -73,6 +77,7 @@
         </dependency>
 
     </dependencies>
+
 
     <build>
         <plugins>

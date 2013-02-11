@@ -26,24 +26,25 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.jboss.as</groupId>
-        <artifactId>jboss-as-arquillian</artifactId>
-        <version>7.2.0.Alpha1-SNAPSHOT</version>
+        <groupId>org.jboss.arquillian.container</groupId>
+        <artifactId>arquillian-jbossas-parent-7.2</artifactId>
+        <version>1.0.0.Final-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>jboss-as-arquillian-container-domain-managed</artifactId>
 
-    <name>JBoss Application Server: Arquillian Managed Domain Container</name>
-
+    <artifactId>arquillian-jbossas-container-domain-managed-7.2</artifactId>
+    <name>Arquillian Container JBoss AS Container Domain Managed 7.2</name>
     <packaging>jar</packaging>
 
     <properties>
-        <jboss.home>${project.basedir}/../../build/target/jboss-as-${jboss.as.release.version}</jboss.home>
+        <jboss.home>${project.build.directory}/jbossas</jboss.home>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>org.jboss.as</groupId>
-            <artifactId>jboss-as-arquillian-common-domain</artifactId>
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-jbossas-common-domain-7.2</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jboss.logging</groupId>
@@ -84,24 +85,45 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>unpack</id>
+                        <phase>pre-integration-test</phase> <!-- So run before testing -->
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.jboss.as</groupId>
+                                    <artifactId>jboss-as-dist</artifactId>
+                                    <version>${version.org.jboss.as}</version>
+                                    <type>zip</type>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${project.build.directory}</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
                 <executions>
                     <execution>
                         <id>copy-resources</id>
-                        <phase>process-test-classes</phase>
+                        <phase>pre-integration-test</phase>
                         <goals>
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${basedir}/target/jbossas</outputDirectory>
+                            <outputDirectory>${jboss.home}</outputDirectory>
                             <overwrite>true</overwrite>
                             <resources>
                                 <resource>
-                                    <directory>${jboss.home}</directory>
-                                    <excludes>
-                                        <exclude>modules/</exclude>
-                                        <exclude>bundles/</exclude>
-                                    </excludes>
+                                    <directory>${project.build.directory}/jboss-as-${version.org.jboss.as}</directory>
                                 </resource>
                             </resources>
                         </configuration>
@@ -112,22 +134,26 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <systemProperties>
-                        <property>
-                          <name>java.util.logging.manager</name>
-                          <value>org.jboss.logmanager.LogManager</value>
-                        </property>
-                        <property>
-                          <name>jboss.home</name>
-                          <value>${basedir}/target/jbossas</value>
-                        </property>
-                        <property>
-                          <name>module.path</name>
-                          <value>${jboss.home}/modules</value>
-                        </property>
-                    </systemProperties>
-                    <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                    <skip>true</skip>
                 </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <phase>integration-test</phase>
+                        <configuration>
+                            <skip>false</skip>
+                            <!-- Fork every test because it will launch a separate AS instance -->
+                            <forkMode>always</forkMode>
+                            <systemProperties>
+                                <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+                                <jboss.home>${jboss.home}</jboss.home>
+                            </systemProperties>
+                            <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

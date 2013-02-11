@@ -25,32 +25,31 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>org.jboss.as</groupId>
-		<artifactId>jboss-as-arquillian</artifactId>
-		<version>7.2.0.Alpha1-SNAPSHOT</version>
-	</parent>
+    <parent>
+        <groupId>org.jboss.arquillian.container</groupId>
+        <artifactId>arquillian-jbossas-parent-7.2</artifactId>
+        <version>1.0.0.Final-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
 
-	<groupId>org.jboss.as</groupId>
-	<artifactId>jboss-as-arquillian-protocol-jmx</artifactId>
-	<version>7.2.0.Alpha1-SNAPSHOT</version>
-
-	<name>JBoss Application Server: Arquillian Protocol JMX</name>
-
-	<packaging>jar</packaging>
+    <artifactId>arquillian-jbossas-protocol-jmx-7.2</artifactId>
+    <name>Arquillian Container JBoss AS JMX Protocol 7.2</name>
+    <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
-          <groupId>org.jboss.as</groupId>
-          <artifactId>jboss-as-arquillian-common</artifactId>
+          <groupId>org.jboss.arquillian.container</groupId>
+          <artifactId>arquillian-jbossas-common-7.2</artifactId>
+          <version>${project.version}</version>
         </dependency>
         <dependency>
           <groupId>org.jboss.as</groupId>
           <artifactId>jboss-as-osgi-service</artifactId>
         </dependency>
         <dependency>
-          <groupId>org.jboss.as</groupId>
-          <artifactId>jboss-as-arquillian-testenricher-msc</artifactId>
+          <groupId>org.jboss.arquillian.container</groupId>
+          <artifactId>arquillian-jbossas-testenricher-msc-7.2</artifactId>
+          <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jboss.arquillian.core</groupId>
