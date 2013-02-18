@@ -72,6 +72,12 @@
             <version>${version.org.jboss.jbossas}</version>
             <type>pom</type>
             <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>istack-commons-runtime</artifactId>
+                    <groupId>com.sun.istack</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 </project>
