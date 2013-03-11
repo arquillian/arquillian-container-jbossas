@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ JBoss, Home of Professional Open Source.
+  ~ Copyright 2012, Red Hat, Inc., and individual contributors
+  ~ as indicated by the @author tags. See the copyright.txt file in the
+  ~ distribution for a full listing of individual contributors.
+  ~
+  ~ This is free software; you can redistribute it and/or modify it
+  ~ under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation; either version 2.1 of
+  ~ the License, or (at your option) any later version.
+  ~
+  ~ This software is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  ~ Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this software; if not, write to the Free
+  ~ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+  ~ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<!-- Parent -->
+	<parent>
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-parent-jbossas</artifactId>
+            <version>1.0.0.Final-SNAPSHOT</version>
+            <relativePath>../pom.xml</relativePath>
+	</parent>
+
+	<!-- Model Version -->
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>arquillian-jbossas-parent-7.x</artifactId>
+	<name>Arquillian Container JBoss AS Parent 7.x</name>
+
+	<packaging>pom</packaging>
+
+    <properties>
+        <version.org.jboss.as>7.2.0.Final</version.org.jboss.as>
+    </properties>
+
+	<dependencyManagement>
+	  <dependencies>
+        <dependency>
+            <groupId>org.jboss.as</groupId>
+            <artifactId>jboss-as-build</artifactId>
+            <version>${version.org.jboss.as}</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.remoting3</groupId>
+            <artifactId>jboss-remoting</artifactId>
+            <version>3.2.16.GA</version>
+        </dependency>
+      </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <scope>test</scope>
+      </dependency>
+    </dependencies>
+
+
+    <build>
+        <plugins>
+            <!-- Disable the animal-sniffer for AS7 Containers -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>animal-sniffer-maven-plugin</artifactId>
+                <version>1.7</version>
+                <executions>
+                    <execution>
+                        <id>signature-check</id>
+                        <phase>none</phase>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+              <artifactId>maven-enforcer-plugin</artifactId>
+              <executions>
+                  <execution>
+                      <id>ban-bad-dependencies</id>
+                      <goals>
+                        <goal>enforce</goal>
+                      </goals>
+                  </execution>
+              </executions>
+            </plugin>
+         </plugins>
+
+        <pluginManagement>
+            <plugins>
+                <!-- Overly-verbose Eclipse config to make M2E not puke all over the place -->
+                <plugin>
+                    <groupId>org.eclipse.m2e</groupId>
+                    <artifactId>lifecycle-mapping</artifactId>
+                    <version>1.0.0</version>
+                    <configuration>
+                        <lifecycleMappingMetadata>
+                            <pluginExecutions>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>org.apache.maven.plugins</groupId>
+                                        <artifactId>maven-dependency-plugin</artifactId>
+                                        <versionRange>[1.0.0,)</versionRange>
+                                        <goals>
+                                            <goal>unpack</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore />
+                                    </action>
+                                </pluginExecution>
+                            </pluginExecutions>
+                        </lifecycleMappingMetadata>
+                    </configuration>
+                </plugin>
+                <!-- Ban Arquillian subsystem as was broken out from AS -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <id>ban-bad-dependencies</id>
+                            <goals>
+                                <goal>enforce</goal>
+                            </goals>
+                            <configuration>
+                                <rules>
+                                    <bannedDependencies>
+                                        <searchTransitive>true</searchTransitive>
+                                        <excludes>
+                                            <exclude>org.jboss.as:jboss-as-arquillian-common</exclude>
+                                            <exclude>org.jboss.as:jboss-as-arquillian-common-domain</exclude>
+                                            <exclude>org.jboss.as:jboss-as-arquillian-container-embedded</exclude>
+                                            <exclude>org.jboss.as:jboss-as-arquillian-container-managed</exclude>
+                                            <exclude>org.jboss.as:jboss-as-arquillian-container-domain-managed</exclude>
+                                            <exclude>org.jboss.as:jboss-as-arquillian-container-remote</exclude>
+                                            <exclude>org.jboss.as:jboss-as-arquillian-container-domain-remote</exclude>
+                                            <exclude>org.jboss.as:jboss-as-arquillian-container-processor-jsfunit</exclude>
+                                            <exclude>org.jboss.as:jboss-as-arquillian-container-protocol-jmx</exclude>
+                                            <exclude>org.jboss.as:jboss-as-arquillian-container-protocol-servlet</exclude>
+                                            <exclude>org.jboss.as:jboss-as-arquillian-container-testenricher-msc</exclude>
+                                            <exclude>org.jboss.as:jboss-as-arquillian-container-testng-integration</exclude>
+                                        </excludes>
+                                    </bannedDependencies>
+                                </rules>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>jbossas-7.2.0.Final</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <version.org.jboss.as.dist>7.2.0.Final</version.org.jboss.as.dist>
+            </properties>
+        </profile>
+        <profile>
+            <id>jbossas-7.1.1.Final</id>
+            <properties>
+                <version.org.jboss.as.dist>7.1.1.Final</version.org.jboss.as.dist>
+            </properties>
+        </profile>
+    </profiles>
+
+	<modules>
+		<module>jbossas-common-7.x</module>
+		<module>jbossas-common-domain-7.x</module>
+		<module>jbossas-container-embedded-7.x</module>
+		<module>jbossas-container-managed-7.x</module>
+		<module>jbossas-container-domain-managed-7.x</module>
+		<module>jbossas-container-remote-7.x</module>
+		<module>jbossas-container-domain-remote-7.x</module>
+		<module>jbossas-testng-int-7.x</module>
+	</modules>
+</project>
