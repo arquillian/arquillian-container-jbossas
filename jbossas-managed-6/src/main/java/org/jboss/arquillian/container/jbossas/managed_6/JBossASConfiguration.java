@@ -51,6 +51,8 @@ public class JBossASConfiguration implements ContainerConfiguration
    private String javaHome = System.getenv("JAVA_HOME");
    
    private String javaVmArguments = "-Xmx512m -XX:MaxPermSize=128m";
+
+   private String logThreshold = "INFO";
    
    private int startupTimeoutInSeconds = 120;
 
@@ -244,6 +246,16 @@ public class JBossASConfiguration implements ContainerConfiguration
    public String getJavaVmArguments()
    {
       return javaVmArguments;
+   }
+
+   public String getLogThreshold()
+   {
+      return logThreshold;
+   }
+
+   public void setLogThreshold(String logThreshold)
+   {
+      this.logThreshold = logThreshold;
    }
    
    /**
