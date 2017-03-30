@@ -25,10 +25,8 @@ import javax.ejb.Stateless;
  * @version $Revision: $
  */
 @Stateless
-public class MyEjb
-{
-   public String getName() 
-   {
-      return "aslak";
-   }
+public class MyEjb {
+    public String getName() {
+        return "aslak";
+    }
 }

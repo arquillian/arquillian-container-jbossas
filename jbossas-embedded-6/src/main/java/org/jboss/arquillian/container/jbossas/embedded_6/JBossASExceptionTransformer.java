@@ -28,32 +28,27 @@ import org.jboss.deployers.client.spi.IncompleteDeploymentException;
  * @author <a href="mailto:aslak@redhat.com">Aslak Knutsen</a>
  * @version $Revision: $
  */
-public class JBossASExceptionTransformer implements DeploymentExceptionTransformer
-{
-   @Override
-   public Throwable transform(Throwable exception)
-   {
-      IncompleteDeploymentException incompleteDeploymentException = findIncompleteDeploymentException(exception);
-      if(incompleteDeploymentException != null)
-      {
-         for (Entry<String, Throwable> entry : incompleteDeploymentException.getIncompleteDeployments().getContextsInError().entrySet())
-         {
-            return entry.getValue();
-         }
-      }
-      return null;   
-   }
-   
-   private IncompleteDeploymentException findIncompleteDeploymentException(Throwable throwable)
-   {
-      if(throwable == null)
-      {
-         return null;
-      }
-      if (throwable instanceof IncompleteDeploymentException)
-      {
-         return (IncompleteDeploymentException) throwable;
-      }
-      return findIncompleteDeploymentException(throwable.getCause());
-   }
+public class JBossASExceptionTransformer implements DeploymentExceptionTransformer {
+    @Override
+    public Throwable transform(Throwable exception) {
+        IncompleteDeploymentException incompleteDeploymentException = findIncompleteDeploymentException(exception);
+        if (incompleteDeploymentException != null) {
+            for (Entry<String, Throwable> entry : incompleteDeploymentException.getIncompleteDeployments()
+                .getContextsInError()
+                .entrySet()) {
+                return entry.getValue();
+            }
+        }
+        return null;
+    }
+
+    private IncompleteDeploymentException findIncompleteDeploymentException(Throwable throwable) {
+        if (throwable == null) {
+            return null;
+        }
+        if (throwable instanceof IncompleteDeploymentException) {
+            return (IncompleteDeploymentException) throwable;
+        }
+        return findIncompleteDeploymentException(throwable.getCause());
+    }
 }

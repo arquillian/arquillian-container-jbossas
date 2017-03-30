@@ -40,35 +40,32 @@ import org.junit.runner.RunWith;
  * @version $Revision: $
  */
 @RunWith(Arquillian.class)
-public class JBossASIntegrationClientTestCase
-{
-   @Deployment(testable = false)
-   public static EnterpriseArchive createDeployment() throws Exception 
-   {
-      String applicationXml = Descriptors.create(ApplicationDescriptor.class, "application.xml")
+public class JBossASIntegrationClientTestCase {
+    @Deployment(testable = false)
+    public static EnterpriseArchive createDeployment() throws Exception {
+        String applicationXml = Descriptors.create(ApplicationDescriptor.class, "application.xml")
             .createModule().ejb("test.jar").up().exportAsString();
-      
-      return ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
-               .addAsModule(
-                     ShrinkWrap.create(JavaArchive.class, "test.jar")
-                        .addClasses(
-                              JBossASIntegrationClientTestCase.class,
-                              MyEjb.class, MyEjbBean.class)
-                         )
-                // we need to manually add the applications.xml file to the EAR
-               .setApplicationXML(new StringAsset(applicationXml));
-   }
-   
-   @EJB
-   MyEjb instanceVariable;
-   
-   @Test
-   public void shouldBeAbleToInjectEJBAsInstanceVariable() throws Exception 
-   {
-      Assert.assertNotNull(
+
+        return ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
+            .addAsModule(
+                ShrinkWrap.create(JavaArchive.class, "test.jar")
+                    .addClasses(
+                        JBossASIntegrationClientTestCase.class,
+                        MyEjb.class, MyEjbBean.class)
+            )
+            // we need to manually add the applications.xml file to the EAR
+            .setApplicationXML(new StringAsset(applicationXml));
+    }
+
+    @EJB
+    MyEjb instanceVariable;
+
+    @Test
+    public void shouldBeAbleToInjectEJBAsInstanceVariable() throws Exception {
+        Assert.assertNotNull(
             "Verify that the Bean has been injected",
             instanceVariable);
-      
-      Assert.assertEquals("aslak", instanceVariable.getName());
-   }
+
+        Assert.assertEquals("aslak", instanceVariable.getName());
+    }
 }

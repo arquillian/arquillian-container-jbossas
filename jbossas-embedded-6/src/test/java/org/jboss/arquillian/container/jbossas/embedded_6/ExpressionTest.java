@@ -25,15 +25,13 @@ import org.junit.Test;
  * @author <a href="mailto:aslak@redhat.com">Aslak Knutsen</a>
  * @version $Revision: $
  */
-public class ExpressionTest
-{
-   @Test
-   public void test()
-   {
-      String content = "http-localhost%2F127.0.0.1-8080";
-      String expression = ".*[A-Z]([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3})-([0-9]+)";
-      
-      System.out.println(content.replaceAll(expression, "$1"));
-      System.out.println(content.replaceAll(expression, "$2"));
-   }
+public class ExpressionTest {
+    @Test
+    public void test() {
+        String content = "http-localhost%2F127.0.0.1-8080";
+        String expression = ".*[A-Z]([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3})-([0-9]+)";
+
+        System.out.println(content.replaceAll(expression, "$1"));
+        System.out.println(content.replaceAll(expression, "$2"));
+    }
 }

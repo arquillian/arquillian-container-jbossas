@@ -37,27 +37,24 @@ import org.junit.runner.RunWith;
  */
 @Ignore // TODO: Add auto extract of 5.1 container. No Maven based dist for 5.1, download from sourceforge? 
 @RunWith(Arquillian.class)
-public class JBossASIntegrationTestCase
-{
-   @Deployment
-   public static JavaArchive createDeployment() throws Exception 
-   {
-      return ShrinkWrap.create(JavaArchive.class, "test.jar")
-               .addClasses(
-                     JBossASIntegrationTestCase.class,
-                     MyEjb.class, MyEjbBean.class);
-   }
-   
-   @EJB
-   private MyEjb instanceVariable;
-   
-   @Test
-   public void shouldBeAbleToInjectEJBAsInstanceVariable() throws Exception 
-   {
-      Assert.assertNotNull(
+public class JBossASIntegrationTestCase {
+    @Deployment
+    public static JavaArchive createDeployment() throws Exception {
+        return ShrinkWrap.create(JavaArchive.class, "test.jar")
+            .addClasses(
+                JBossASIntegrationTestCase.class,
+                MyEjb.class, MyEjbBean.class);
+    }
+
+    @EJB
+    private MyEjb instanceVariable;
+
+    @Test
+    public void shouldBeAbleToInjectEJBAsInstanceVariable() throws Exception {
+        Assert.assertNotNull(
             "Verify that the Bean has been injected",
             instanceVariable);
-      
-      Assert.assertEquals("aslak", instanceVariable.getName());
-   }
+
+        Assert.assertEquals("aslak", instanceVariable.getName());
+    }
 }

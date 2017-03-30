@@ -30,252 +30,233 @@ import org.jboss.arquillian.container.spi.client.deployment.Validate;
  * @author <a href="mailto:german.escobarc@gmail.com">German Escobar</a>
  * @version $Revision: $
  */
-public class JBossASConfiguration implements ContainerConfiguration
-{
-   private String bindAddress = "localhost";
+public class JBossASConfiguration implements ContainerConfiguration {
+    private String bindAddress = "localhost";
 
-   private int httpPort = 8080;
+    private int httpPort = 8080;
 
-   private int rmiPort = 1099;
-   
-   private String profileName = "default";
-   
-   private String partition = null;
+    private int rmiPort = 1099;
 
-   private String portBindingSet = null;
+    private String profileName = "default";
 
-   private boolean useRmiPortForAliveCheck = false;
-   
-   private String jbossHome = System.getenv("JBOSS_HOME");
-   
-   private String javaHome = System.getenv("JAVA_HOME");
-   
-   private String javaVmArguments = "-Xmx512m -XX:MaxPermSize=128m";
+    private String partition = null;
 
-   private int startupTimeoutInSeconds = 120;
+    private String portBindingSet = null;
 
-   private int shutdownTimeoutInSeconds = 45;
+    private boolean useRmiPortForAliveCheck = false;
 
-   enum JBossBindingSet {
-      PORTS_01("ports-01", 100),
-      PORTS_02("ports-02", 200),
-      PORTS_03("ports-03", 300);
+    private String jbossHome = System.getenv("JBOSS_HOME");
 
-      private final String name;
-      private final int rmiPort;
-      private final int httpPort;
+    private String javaHome = System.getenv("JAVA_HOME");
 
-      private static final HashMap<String, JBossBindingSet> bindings = new HashMap<String, JBossBindingSet>();
-      
-      static
-      {
-         for (JBossBindingSet binding : values())
-         {
-            bindings.put(binding.name, binding);
-         }
-      }
+    private String javaVmArguments = "-Xmx512m -XX:MaxPermSize=128m";
 
-      static JBossBindingSet getBindingSet(String name)
-      {
-         return bindings.get(name);
-      }
+    private int startupTimeoutInSeconds = 120;
 
-      private JBossBindingSet(String name, int offSet)
-      {
-         this.name = name;
-         this.rmiPort = 1099 + offSet;
-         this.httpPort = 8080 + offSet;
-      }
+    private int shutdownTimeoutInSeconds = 45;
 
-      int getRmiPort() {
-         return rmiPort;
-      }
+    enum JBossBindingSet
 
-      int getHttpPort() {
-         return httpPort;
-      }
-   }
+    {
+        PORTS_01("ports-01", 100),
+            PORTS_02("ports-02", 200),
+            PORTS_03("ports-03", 300);
 
-   public JBossASConfiguration() {
-       // if no javaHome set, reuse this Java JVM
-       if (javaHome == null || "".equals(javaHome)) {
-           javaHome = System.getProperty("java.home");
-       }
-   }
+        private final String name;
+        private final int rmiPort;
+        private final int httpPort;
 
-   /* (non-Javadoc)
-    * @see org.jboss.arquillian.spi.client.container.ContainerConfiguration#validate()
-    */
-   @Override
-   public void validate() throws ConfigurationException
-   {
-      Validate.configurationDirectoryExists(jbossHome, "Either JBOSS_HOME environment variable or jbossHome property in Arquillian configuration must be set and point to a valid directory");
-      Validate.configurationDirectoryExists(javaHome, "Either JAVA_HOME environment variable or javaHome property in Arquillian configuration must be set and point to a valid directory");
-   }
-   
-   public String getBindAddress()
-   {
-      return bindAddress;
-   }
+        private static final HashMap<String, JBossBindingSet> bindings = new HashMap<String, JBossBindingSet>();
 
-   public void setBindAddress(String bindAddress)
-   {
-      this.bindAddress = bindAddress;
-   }
+        static
+        {
+            for (JBossBindingSet binding : values()) {
+                bindings.put(binding.name, binding);
+            }
+        }
 
-   public int getHttpPort()
-   {
-      return httpPort;
-   }
+    static JBossBindingSet getBindingSet(String name) {
+        return bindings.get(name);
+    }
 
-   public String getPortBindingSet()
-   {
-      return portBindingSet;
-   }
+    private JBossBindingSet(String name, int offSet) {
+        this.name = name;
+        this.rmiPort = 1099 + offSet;
+        this.httpPort = 8080 + offSet;
+    }
 
-   public void setPortBindingSet(String portBindingSet)
-   {
-      this.portBindingSet = portBindingSet;
-   }
+    int getRmiPort() {
+        return rmiPort;
+    }
 
-   /**
-    * Set the HTTP Connect port. <br/>
-    * This is not the JBoss AS HTTP Bind port, bind port must be set in the JBoss XML configuration.<br/>
-    * <b>Only set this if default http port is changed in JBoss AS!</b>
-    * 
-    * @param httpPort HTTP Connect port
-    */
-   public void setHttpPort(int httpPort)
-   {
-      this.httpPort = httpPort;
-   }
+    int getHttpPort() {
+        return httpPort;
+    }
 
-   /**
-    * @return the rmiPort
-    */
-   public int getRmiPort()
-   {
-      return rmiPort;
-   }
-   
-   /**
-    * Set the RMI Connect port. <br/>
-    * This is not the JBoss AS RMI Bind port, bind port must be set in the JBoss XML configuration.<br/>
-    * <b>Only set this if default RMI port is changed in JBoss AS!</b>
-    * 
-    * @param rmiPort the rmiPort to set
-    */
-   public void setRmiPort(int rmiPort)
-   {
-      this.rmiPort = rmiPort;
-   }
+}
 
-   public String getProfileName()
-   {
-      return profileName;
-   }
+    public JBossASConfiguration() {
+        // if no javaHome set, reuse this Java JVM
+        if (javaHome == null || "".equals(javaHome)) {
+            javaHome = System.getProperty("java.home");
+        }
+    }
 
-   public void setProfileName(String profileName)
-   {
-      this.profileName = profileName;
-   }
-   
-   public String getPartition()
-   {
-      return partition;
-   }
+    /* (non-Javadoc)
+     * @see org.jboss.arquillian.spi.client.container.ContainerConfiguration#validate()
+     */
+    @Override
+    public void validate() throws ConfigurationException {
+        Validate.configurationDirectoryExists(jbossHome,
+            "Either JBOSS_HOME environment variable or jbossHome property in Arquillian configuration must be set and point to a valid directory");
+        Validate.configurationDirectoryExists(javaHome,
+            "Either JAVA_HOME environment variable or javaHome property in Arquillian configuration must be set and point to a valid directory");
+    }
 
-   public void setPartition(String partition)
-   {
-      this.partition = partition;
-   }
+    public String getBindAddress() {
+        return bindAddress;
+    }
 
-   /**
-    * If true, RMI port and not HTTP port is used to see if the Server is running.
-    * 
-    * @param checkAliveUsingRmiPort the checkAliveUsingRmiPort to set
-    */
-   public void setUseRmiPortForAliveCheck(boolean checkAliveUsingRmiPort)
-   {
-      this.useRmiPortForAliveCheck = checkAliveUsingRmiPort;
-   }
-   
-   /**
-    * @return the checkAliveUsingRmiPort
-    */
-   public boolean isUseRmiPortForAliveCheck()
-   {
-      return useRmiPortForAliveCheck;
-   }
+    public void setBindAddress(String bindAddress) {
+        this.bindAddress = bindAddress;
+    }
 
-   public void setJbossHome(String jbossHome)
-   {
-      this.jbossHome = jbossHome;
-   }
-   
-   public String getJbossHome()
-   {
-      if(jbossHome != null) 
-      {
-         return new File(jbossHome).getAbsolutePath();
-      }
-      return jbossHome;
-   }
-   
-   public void setJavaHome(String javaHome)
-   {
-      this.javaHome = javaHome;
-   }
-   
-   public String getJavaHome()
-   {
-      return javaHome;
-   }
-   
-   /**
-    * This will override the default ("-Xmx512m -XX:MaxPermSize=128m") startup JVM arguments. 
-    * 
-    * @param javaVmArguments use as start up arguments
-    */
-   public void setJavaVmArguments(String javaVmArguments)
-   {
-      this.javaVmArguments = javaVmArguments;
-   }
-   
-   public String getJavaVmArguments()
-   {
-      return javaVmArguments;
-   }
+    public int getHttpPort() {
+        return httpPort;
+    }
 
-   /**
-    * @return the startupTimeoutInSeconds
-    */
-   public int getStartupTimeoutInSeconds()
-   {
-      return startupTimeoutInSeconds;
-   }
-   
-   /**
-    * @param startupTimeoutInSeconds the startupTimeoutInSeconds to set
-    */
-   public void setStartupTimeoutInSeconds(int startupTimeoutInSeconds)
-   {
-      this.startupTimeoutInSeconds = startupTimeoutInSeconds;
-   }
+    public String getPortBindingSet() {
+        return portBindingSet;
+    }
 
-   /**
-    * @return the shutdownTimeoutInSeconds
-    */
-   public int getShutdownTimeoutInSeconds()
-   {
-      return shutdownTimeoutInSeconds;
-   }
+    public void setPortBindingSet(String portBindingSet) {
+        this.portBindingSet = portBindingSet;
+    }
 
-   /**
-    * @param shutdownTimeoutInSeconds the shutdownTimeoutInSeconds to set
-    */
-   public void setShutdownTimeoutInSeconds(int shutdownTimeoutInSeconds)
-   {
-      this.shutdownTimeoutInSeconds = shutdownTimeoutInSeconds;
-   }
+    /**
+     * Set the HTTP Connect port. <br/>
+     * This is not the JBoss AS HTTP Bind port, bind port must be set in the JBoss XML configuration.<br/>
+     * <b>Only set this if default http port is changed in JBoss AS!</b>
+     *
+     * @param httpPort
+     *     HTTP Connect port
+     */
+    public void setHttpPort(int httpPort) {
+        this.httpPort = httpPort;
+    }
+
+    /**
+     * @return the rmiPort
+     */
+    public int getRmiPort() {
+        return rmiPort;
+    }
+
+    /**
+     * Set the RMI Connect port. <br/>
+     * This is not the JBoss AS RMI Bind port, bind port must be set in the JBoss XML configuration.<br/>
+     * <b>Only set this if default RMI port is changed in JBoss AS!</b>
+     *
+     * @param rmiPort
+     *     the rmiPort to set
+     */
+    public void setRmiPort(int rmiPort) {
+        this.rmiPort = rmiPort;
+    }
+
+    public String getProfileName() {
+        return profileName;
+    }
+
+    public void setProfileName(String profileName) {
+        this.profileName = profileName;
+    }
+
+    public String getPartition() {
+        return partition;
+    }
+
+    public void setPartition(String partition) {
+        this.partition = partition;
+    }
+
+    /**
+     * If true, RMI port and not HTTP port is used to see if the Server is running.
+     *
+     * @param checkAliveUsingRmiPort
+     *     the checkAliveUsingRmiPort to set
+     */
+    public void setUseRmiPortForAliveCheck(boolean checkAliveUsingRmiPort) {
+        this.useRmiPortForAliveCheck = checkAliveUsingRmiPort;
+    }
+
+    /**
+     * @return the checkAliveUsingRmiPort
+     */
+    public boolean isUseRmiPortForAliveCheck() {
+        return useRmiPortForAliveCheck;
+    }
+
+    public void setJbossHome(String jbossHome) {
+        this.jbossHome = jbossHome;
+    }
+
+    public String getJbossHome() {
+        if (jbossHome != null) {
+            return new File(jbossHome).getAbsolutePath();
+        }
+        return jbossHome;
+    }
+
+    public void setJavaHome(String javaHome) {
+        this.javaHome = javaHome;
+    }
+
+    public String getJavaHome() {
+        return javaHome;
+    }
+
+    /**
+     * This will override the default ("-Xmx512m -XX:MaxPermSize=128m") startup JVM arguments.
+     *
+     * @param javaVmArguments
+     *     use as start up arguments
+     */
+    public void setJavaVmArguments(String javaVmArguments) {
+        this.javaVmArguments = javaVmArguments;
+    }
+
+    public String getJavaVmArguments() {
+        return javaVmArguments;
+    }
+
+    /**
+     * @return the startupTimeoutInSeconds
+     */
+    public int getStartupTimeoutInSeconds() {
+        return startupTimeoutInSeconds;
+    }
+
+    /**
+     * @param startupTimeoutInSeconds
+     *     the startupTimeoutInSeconds to set
+     */
+    public void setStartupTimeoutInSeconds(int startupTimeoutInSeconds) {
+        this.startupTimeoutInSeconds = startupTimeoutInSeconds;
+    }
+
+    /**
+     * @return the shutdownTimeoutInSeconds
+     */
+    public int getShutdownTimeoutInSeconds() {
+        return shutdownTimeoutInSeconds;
+    }
+
+    /**
+     * @param shutdownTimeoutInSeconds
+     *     the shutdownTimeoutInSeconds to set
+     */
+    public void setShutdownTimeoutInSeconds(int shutdownTimeoutInSeconds) {
+        this.shutdownTimeoutInSeconds = shutdownTimeoutInSeconds;
+    }
 }

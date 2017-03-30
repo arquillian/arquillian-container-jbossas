@@ -42,60 +42,54 @@ import org.junit.runner.RunWith;
  * @version $Revision: $
  */
 @RunWith(Arquillian.class)
-public class JBossASIntegrationMultipleTargetTestCase
-{
-   @Deployment(name = "dep1", order = 1)
-   @TargetsContainer("jboss-i1")
-   public static EnterpriseArchive createDeployment1() throws Exception
-   {
-      return createDeployment();
-   }
-   
-   @Deployment(name = "dep2", order = 2)
-   @TargetsContainer("jboss-i2")
-   public static EnterpriseArchive createDeployment2() throws Exception
-   {
-      return createDeployment();
-   }
-   
-   private static EnterpriseArchive createDeployment() throws Exception 
-   {
-      String applicationXml = Descriptors.create(ApplicationDescriptor.class, "application.xml")
+public class JBossASIntegrationMultipleTargetTestCase {
+    @Deployment(name = "dep1", order = 1)
+    @TargetsContainer("jboss-i1")
+    public static EnterpriseArchive createDeployment1() throws Exception {
+        return createDeployment();
+    }
+
+    @Deployment(name = "dep2", order = 2)
+    @TargetsContainer("jboss-i2")
+    public static EnterpriseArchive createDeployment2() throws Exception {
+        return createDeployment();
+    }
+
+    private static EnterpriseArchive createDeployment() throws Exception {
+        String applicationXml = Descriptors.create(ApplicationDescriptor.class, "application.xml")
             .createModule().ejb("test.jar").up().exportAsString();
-      
-      return ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
-               .addAsModule(
-                     ShrinkWrap.create(JavaArchive.class, "test.jar")
-                        .addClasses(
-                              JBossASIntegrationMultipleTargetTestCase.class,
-                              MyEjb.class, MyEjbBean.class)
-                         )
-                // we need to manually add the applications.xml file to the EAR
-               .setApplicationXML(new StringAsset(applicationXml));
-   }
-   
-   @EJB
-   private MyEjb instanceVariable;
 
-   @Test
-   @OperateOnDeployment("dep1")
-   public void shouldBeAbleToInjectEJBAsInstanceVariable() throws Exception 
-   {
-      Assert.assertNotNull(
+        return ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
+            .addAsModule(
+                ShrinkWrap.create(JavaArchive.class, "test.jar")
+                    .addClasses(
+                        JBossASIntegrationMultipleTargetTestCase.class,
+                        MyEjb.class, MyEjbBean.class)
+            )
+            // we need to manually add the applications.xml file to the EAR
+            .setApplicationXML(new StringAsset(applicationXml));
+    }
+
+    @EJB
+    private MyEjb instanceVariable;
+
+    @Test
+    @OperateOnDeployment("dep1")
+    public void shouldBeAbleToInjectEJBAsInstanceVariable() throws Exception {
+        Assert.assertNotNull(
             "Verify that the Bean has been injected",
             instanceVariable);
-      
-      Assert.assertEquals("aslak", instanceVariable.getName());
-   }
 
-   @Test
-   @OperateOnDeployment("dep2")
-   public void shouldBeAbleToInjectEJBAsInstanceVariableInOtherContainer() throws Exception 
-   {
-      Assert.assertNotNull(
+        Assert.assertEquals("aslak", instanceVariable.getName());
+    }
+
+    @Test
+    @OperateOnDeployment("dep2")
+    public void shouldBeAbleToInjectEJBAsInstanceVariableInOtherContainer() throws Exception {
+        Assert.assertNotNull(
             "Verify that the Bean has been injected",
             instanceVariable);
-      
-      Assert.assertEquals("aslak", instanceVariable.getName());
-   }
+
+        Assert.assertEquals("aslak", instanceVariable.getName());
+    }
 }

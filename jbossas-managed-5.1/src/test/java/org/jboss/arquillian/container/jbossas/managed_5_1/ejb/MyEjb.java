@@ -17,13 +17,10 @@
 package org.jboss.arquillian.container.jbossas.managed_5_1.ejb;
 
 /**
- *
  * @author <a href="mailto:aslak@redhat.com">Aslak Knutsen</a>
  * @version $Revision: $
  */
-public interface MyEjb
-{
+public interface MyEjb {
 
-   public String getName();
-
+    public String getName();
 }

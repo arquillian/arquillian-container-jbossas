@@ -35,27 +35,24 @@ import org.junit.runner.RunWith;
  * @version $Revision: $
  */
 @RunWith(Arquillian.class)
-public class JBossASEmbeddedIntegrationTestCase
-{
-   @Deployment
-   public static JavaArchive createDeployment() throws Exception 
-   {
-      return ShrinkWrap.create(JavaArchive.class, "test.jar")
-               .addClasses(
-                     JBossASEmbeddedIntegrationTestCase.class,
-                     MyEjb.class);
-   }
-   
-   @EJB
-   private MyEjb instanceVariable;
-   
-   @Test
-   public void shouldBeAbleToInjectEJBAsInstanceVariable() throws Exception 
-   {
-      Assert.assertNotNull(
+public class JBossASEmbeddedIntegrationTestCase {
+    @Deployment
+    public static JavaArchive createDeployment() throws Exception {
+        return ShrinkWrap.create(JavaArchive.class, "test.jar")
+            .addClasses(
+                JBossASEmbeddedIntegrationTestCase.class,
+                MyEjb.class);
+    }
+
+    @EJB
+    private MyEjb instanceVariable;
+
+    @Test
+    public void shouldBeAbleToInjectEJBAsInstanceVariable() throws Exception {
+        Assert.assertNotNull(
             "Verify that the Bean has been injected",
             instanceVariable);
-      
-      Assert.assertEquals("aslak", instanceVariable.getName());
-   }
+
+        Assert.assertEquals("aslak", instanceVariable.getName());
+    }
 }

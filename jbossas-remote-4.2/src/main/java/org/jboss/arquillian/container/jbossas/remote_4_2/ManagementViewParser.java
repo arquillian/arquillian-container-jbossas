@@ -43,90 +43,76 @@ import org.w3c.dom.NodeList;
  * @author <a href="mailto:aslak@redhat.com">Aslak Knutsen</a>
  * @version $Revision: $
  */
-public final class ManagementViewParser
-{
-   public static ProtocolMetaData parse(String archiveName, MBeanServerConnection connection) throws Exception
-   {
-      ProtocolMetaData metaData = new ProtocolMetaData();
-      HTTPContext httpContext = extractHTTPContext(connection);
-      metaData.addContext(httpContext);
+public final class ManagementViewParser {
+    public static ProtocolMetaData parse(String archiveName, MBeanServerConnection connection) throws Exception {
+        ProtocolMetaData metaData = new ProtocolMetaData();
+        HTTPContext httpContext = extractHTTPContext(connection);
+        metaData.addContext(httpContext);
 
-      // extract deployment content
-      scanDeployment(connection, httpContext, archiveName);
+        // extract deployment content
+        scanDeployment(connection, httpContext, archiveName);
 
-      return metaData;
-   }
+        return metaData;
+    }
 
-   private static void scanDeployment(MBeanServerConnection connection, HTTPContext httpContext, String archiveName)
-      throws Exception
-   {
-      ObjectName earExpression = new ObjectName("*:*,J2EEApplication=" + archiveName);
-      Set<ObjectName> deployments = connection.queryNames(earExpression, null);
-      for (ObjectName deployment : deployments)
-      {
-         if (deployment.getKeyProperty("j2eeType").equals("WebModule"))
-         {
-            scanWar(connection, httpContext, deployment);
-         }
-      }
+    private static void scanDeployment(MBeanServerConnection connection, HTTPContext httpContext, String archiveName)
+        throws Exception {
+        ObjectName earExpression = new ObjectName("*:*,J2EEApplication=" + archiveName);
+        Set<ObjectName> deployments = connection.queryNames(earExpression, null);
+        for (ObjectName deployment : deployments) {
+            if (deployment.getKeyProperty("j2eeType").equals("WebModule")) {
+                scanWar(connection, httpContext, deployment);
+            }
+        }
 
-      ObjectName warExpression = new ObjectName("*:*,J2EEApplication=null,j2eeType=WebModule,name=" + archiveName);
-      Set<ObjectName> warDeployments = connection.queryNames(warExpression, null);
-      for(ObjectName warDeployment : warDeployments)
-      {
-         scanWar(connection, httpContext, warDeployment);
-      }
-   }
+        ObjectName warExpression = new ObjectName("*:*,J2EEApplication=null,j2eeType=WebModule,name=" + archiveName);
+        Set<ObjectName> warDeployments = connection.queryNames(warExpression, null);
+        for (ObjectName warDeployment : warDeployments) {
+            scanWar(connection, httpContext, warDeployment);
+        }
+    }
 
-   private static void scanWar(MBeanServerConnection connection, HTTPContext httpContext, ObjectName war)
-      throws Exception
-   {
-      String descriptor = (String) connection.getAttribute(war, "deploymentDescriptor");
-      List<String> servletNames = extractServletNames(descriptor);
+    private static void scanWar(MBeanServerConnection connection, HTTPContext httpContext, ObjectName war)
+        throws Exception {
+        String descriptor = (String) connection.getAttribute(war, "deploymentDescriptor");
+        List<String> servletNames = extractServletNames(descriptor);
 
-      for (String servletName : servletNames)
-      {
-         Set<ObjectName> servletObjects = connection.queryNames(new ObjectName(
-               "*:*,J2EEApplication=none,J2EEServer=none,j2eeType=Servlet,name=" + servletName), null);
-         for (ObjectName servletObject : servletObjects)
-         {
-            String contextRoot = servletObject.getKeyProperty("WebModule").replaceAll(".*\\/(.*)", "$1");
-            httpContext.add(new Servlet(servletName, contextRoot));
-         }
-      }
-   }
+        for (String servletName : servletNames) {
+            Set<ObjectName> servletObjects = connection.queryNames(new ObjectName(
+                "*:*,J2EEApplication=none,J2EEServer=none,j2eeType=Servlet,name=" + servletName), null);
+            for (ObjectName servletObject : servletObjects) {
+                String contextRoot = servletObject.getKeyProperty("WebModule").replaceAll(".*\\/(.*)", "$1");
+                httpContext.add(new Servlet(servletName, contextRoot));
+            }
+        }
+    }
 
-   private static HTTPContext extractHTTPContext(MBeanServerConnection connection) throws Exception
-   {
-      Set<ObjectName> connectors = connection.queryNames(new ObjectName("jboss.web:*,type=Connector"), null);
-      for(ObjectName connector : connectors)
-      {
-         String protocol = (String)connection.getAttribute(connector, "protocol");
-         if(protocol.contains("HTTP"))
-         {
-            String address = ((InetAddress)connection.getAttribute(connector, "address")).getHostAddress();
-            Integer port = Integer.parseInt(connector.getKeyProperty("port"));
-            return new HTTPContext(address, port);
-         }
-      }
-      return null;
-   }
+    private static HTTPContext extractHTTPContext(MBeanServerConnection connection) throws Exception {
+        Set<ObjectName> connectors = connection.queryNames(new ObjectName("jboss.web:*,type=Connector"), null);
+        for (ObjectName connector : connectors) {
+            String protocol = (String) connection.getAttribute(connector, "protocol");
+            if (protocol.contains("HTTP")) {
+                String address = ((InetAddress) connection.getAttribute(connector, "address")).getHostAddress();
+                Integer port = Integer.parseInt(connector.getKeyProperty("port"));
+                return new HTTPContext(address, port);
+            }
+        }
+        return null;
+    }
 
-   private static List<String> extractServletNames(String descriptor) throws Exception
-   {
-      Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+    private static List<String> extractServletNames(String descriptor) throws Exception {
+        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
             .parse(new ByteArrayInputStream(descriptor.getBytes()));
 
-      XPathExpression xPathExpression = XPathFactory.newInstance().newXPath().compile("/web-app/servlet/servlet-name");
+        XPathExpression xPathExpression = XPathFactory.newInstance().newXPath().compile("/web-app/servlet/servlet-name");
 
-      NodeList nodes = (NodeList) xPathExpression.evaluate(doc, XPathConstants.NODESET);
+        NodeList nodes = (NodeList) xPathExpression.evaluate(doc, XPathConstants.NODESET);
 
-      List<String> servletNames = new ArrayList<String>();
-      for (int i = 0; i < nodes.getLength(); i++)
-      {
-         Node node = nodes.item(i);
-         servletNames.add(node.getTextContent());
-      }
-      return servletNames;
-   }
+        List<String> servletNames = new ArrayList<String>();
+        for (int i = 0; i < nodes.getLength(); i++) {
+            Node node = nodes.item(i);
+            servletNames.add(node.getTextContent());
+        }
+        return servletNames;
+    }
 }

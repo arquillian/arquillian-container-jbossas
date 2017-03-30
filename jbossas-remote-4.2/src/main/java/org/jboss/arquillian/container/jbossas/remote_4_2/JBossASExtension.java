@@ -27,12 +27,12 @@ import org.jboss.arquillian.core.spi.LoadableExtension;
  * @author Davide D'Alto
  * @version $Revision: $
  */
-public class JBossASExtension implements LoadableExtension
-{
-   @Override
-   public void register(ExtensionBuilder builder)
-   {
-      builder.service(DeployableContainer.class, org.jboss.arquillian.container.jbossas.remote_4_2.JBossASRemoteContainer.class);
-      builder.service(DeploymentExceptionTransformer.class, org.jboss.arquillian.container.jbossas.remote_4_2.JBossASExceptionTransformer.class);
-   }
+public class JBossASExtension implements LoadableExtension {
+    @Override
+    public void register(ExtensionBuilder builder) {
+        builder.service(DeployableContainer.class,
+            org.jboss.arquillian.container.jbossas.remote_4_2.JBossASRemoteContainer.class);
+        builder.service(DeploymentExceptionTransformer.class,
+            org.jboss.arquillian.container.jbossas.remote_4_2.JBossASExceptionTransformer.class);
+    }
 }

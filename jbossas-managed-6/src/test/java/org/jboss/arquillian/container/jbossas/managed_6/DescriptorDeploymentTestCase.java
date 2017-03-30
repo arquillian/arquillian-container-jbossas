@@ -41,68 +41,57 @@ import org.junit.runner.RunWith;
  * @version $Revision: $
  */
 @RunWith(Arquillian.class)
-public class DescriptorDeploymentTestCase
-{
-   private static final String DEP = "deployment";
-   
-   private static final String TEST_QUEUE_DEF = "" +
-   		"<configuration xmlns=\"urn:hornetq\" \n" + 
-   		"    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" + 
-   		"    xsi:schemaLocation=\"urn:hornetq ../schemas/hornetq-jms.xsd \">\n" + 
-   		"    \n" + 
-   		"    <queue name=\"TestQueue\">\n" + 
-   		"        <entry name=\"queues/Test\"/>\n" + 
-   		"    </queue>\n" + 
-   		"    \n" + 
-   		"</configuration>";
-   
-   @Deployment(name = DEP, order = 1)
-   public static Descriptor createQueue() 
-   {
-      // we have no JMSDescriptor
-      // TODO: create a Generic Descriptor type.
-      return new Descriptor()
-      {
-         @Override
-         public String getDescriptorName()
-         {
-            return "test-hornetq-jms.xml";
-         }
+public class DescriptorDeploymentTestCase {
+    private static final String DEP = "deployment";
 
-         @Override
-         public void exportTo(OutputStream output)
-               throws DescriptorExportException, IllegalArgumentException
-         {
-            try
-            {
-               output.write(TEST_QUEUE_DEF.getBytes("UTF-8"));
-            }
-            catch (IOException e)
-            {
-               throw new DescriptorExportException(e.getMessage(), e);
-            }
-         }
+    private static final String TEST_QUEUE_DEF = "" +
+        "<configuration xmlns=\"urn:hornetq\" \n" +
+        "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+        "    xsi:schemaLocation=\"urn:hornetq ../schemas/hornetq-jms.xsd \">\n" +
+        "    \n" +
+        "    <queue name=\"TestQueue\">\n" +
+        "        <entry name=\"queues/Test\"/>\n" +
+        "    </queue>\n" +
+        "    \n" +
+        "</configuration>";
 
-         @Override
-         public String exportAsString() throws DescriptorExportException
-         {
-            return TEST_QUEUE_DEF;
-         }
-      };
-   }
-   
-   @Deployment(name = DEP, order = 2)
-   public static JavaArchive createTest()
-   {
-      return ShrinkWrap.create(JavaArchive.class);
-   }
-   
-   @Resource(mappedName = "queues/Test")
-   private Queue queue; 
-   
-   @Test @OperateOnDeployment(DEP)
-   public void shouldHaveInjectedTestQueue()
-   {
-      Assert.assertNotNull(queue);
-   }
+    @Deployment(name = DEP, order = 1)
+    public static Descriptor createQueue() {
+        // we have no JMSDescriptor
+        // TODO: create a Generic Descriptor type.
+        return new Descriptor() {
+            @Override
+            public String getDescriptorName() {
+                return "test-hornetq-jms.xml";
+            }
+
+            @Override
+            public void exportTo(OutputStream output)
+                throws DescriptorExportException, IllegalArgumentException {
+                try {
+                    output.write(TEST_QUEUE_DEF.getBytes("UTF-8"));
+                } catch (IOException e) {
+                    throw new DescriptorExportException(e.getMessage(), e);
+                }
+            }
+
+            @Override
+            public String exportAsString() throws DescriptorExportException {
+                return TEST_QUEUE_DEF;
+            }
+        };
+    }
+
+    @Deployment(name = DEP, order = 2)
+    public static JavaArchive createTest() {
+        return ShrinkWrap.create(JavaArchive.class);
+    }
+
+    @Resource(mappedName = "queues/Test")
+    private Queue queue;
+
+    @Test @OperateOnDeployment(DEP)
+    public void shouldHaveInjectedTestQueue() {
+        Assert.assertNotNull(queue);
+    }
 }

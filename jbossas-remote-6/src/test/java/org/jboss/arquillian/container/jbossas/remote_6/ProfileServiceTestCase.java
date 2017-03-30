@@ -35,34 +35,31 @@ import org.junit.Test;
  * @version $Revision: $
  */
 @Ignore // not automated
-public class ProfileServiceTestCase
-{
+public class ProfileServiceTestCase {
 
-   @Test
-   public void shouldBeAbleToExtractData() throws Exception
-   {
-      InitialContext ctx = createContext();
-      ProfileService profile = (ProfileService) ctx.lookup("ProfileService");
+    @Test
+    public void shouldBeAbleToExtractData() throws Exception {
+        InitialContext ctx = createContext();
+        ProfileService profile = (ProfileService) ctx.lookup("ProfileService");
 
-      ProtocolMetaData metaData = ManagementViewParser.parse("test.war", profile);
-      
-      Assert.assertNotNull(metaData);
-      
-      HTTPContext context = metaData.getContext(HTTPContext.class);
-      Assert.assertNotNull(context);
-      
-      Assert.assertEquals("127.0.0.1", context.getHost());
-      Assert.assertEquals(8080, context.getPort());
-      
-      Assert.assertEquals(3, context.getServlets().size());
-   }
+        ProtocolMetaData metaData = ManagementViewParser.parse("test.war", profile);
 
-   private InitialContext createContext() throws Exception
-   {
-         Properties props = new Properties();
-         props.put(InitialContext.INITIAL_CONTEXT_FACTORY, "org.jnp.interfaces.NamingContextFactory");
-         props.put(InitialContext.URL_PKG_PREFIXES, "org.jboss.naming:org.jnp.interfaces");
-         props.put(InitialContext.PROVIDER_URL, "jnp://localhost:1099");
-         return new InitialContext(props);
-   }
+        Assert.assertNotNull(metaData);
+
+        HTTPContext context = metaData.getContext(HTTPContext.class);
+        Assert.assertNotNull(context);
+
+        Assert.assertEquals("127.0.0.1", context.getHost());
+        Assert.assertEquals(8080, context.getPort());
+
+        Assert.assertEquals(3, context.getServlets().size());
+    }
+
+    private InitialContext createContext() throws Exception {
+        Properties props = new Properties();
+        props.put(InitialContext.INITIAL_CONTEXT_FACTORY, "org.jnp.interfaces.NamingContextFactory");
+        props.put(InitialContext.URL_PKG_PREFIXES, "org.jboss.naming:org.jnp.interfaces");
+        props.put(InitialContext.PROVIDER_URL, "jnp://localhost:1099");
+        return new InitialContext(props);
+    }
 }

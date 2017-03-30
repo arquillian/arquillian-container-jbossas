@@ -20,32 +20,26 @@ package org.jboss.arquillian.container.jbossas.managed_4_2;
 import org.jboss.arquillian.container.spi.client.container.DeploymentExceptionTransformer;
 import org.jboss.deployment.IncompleteDeploymentException;
 
-
 /**
  * JBossASExceptionTransformer
  *
  * @author <a href="mailto:aslak@redhat.com">Aslak Knutsen</a>
  * @version $Revision: $
  */
-public class JBossASExceptionTransformer implements DeploymentExceptionTransformer
-{
-   @Override
-   public Throwable transform(Throwable exception)
-   {
-      IncompleteDeploymentException incompleteDeploymentException = findIncompleteDeploymentException(exception);
-      return incompleteDeploymentException;   
-   }
-   
-   private IncompleteDeploymentException findIncompleteDeploymentException(Throwable throwable)
-   {
-      if(throwable == null)
-      {
-         return null;
-      }
-      if (throwable instanceof IncompleteDeploymentException)
-      {
-         return (IncompleteDeploymentException) throwable;
-      }
-      return findIncompleteDeploymentException(throwable.getCause());
-   }
+public class JBossASExceptionTransformer implements DeploymentExceptionTransformer {
+    @Override
+    public Throwable transform(Throwable exception) {
+        IncompleteDeploymentException incompleteDeploymentException = findIncompleteDeploymentException(exception);
+        return incompleteDeploymentException;
+    }
+
+    private IncompleteDeploymentException findIncompleteDeploymentException(Throwable throwable) {
+        if (throwable == null) {
+            return null;
+        }
+        if (throwable instanceof IncompleteDeploymentException) {
+            return (IncompleteDeploymentException) throwable;
+        }
+        return findIncompleteDeploymentException(throwable.getCause());
+    }
 }

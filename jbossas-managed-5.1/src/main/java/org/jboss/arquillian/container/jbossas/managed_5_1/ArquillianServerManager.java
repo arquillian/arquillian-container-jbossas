@@ -20,40 +20,36 @@ package org.jboss.arquillian.container.jbossas.managed_5_1;
 import org.jboss.jbossas.servermanager.ServerManager;
 
 /**
- * Hack to override startup/shutdown timeouts of the ServerManager. 
- * 
+ * Hack to override startup/shutdown timeouts of the ServerManager.
+ * <p>
  * Default impl only reads from System.properties.
  *
  * @author <a href="mailto:aslak@redhat.com">Aslak Knutsen</a>
  * @version $Revision: $
  */
-public class ArquillianServerManager extends ServerManager
-{
-   private int startupTimeout;
-   private int shutdownTimeout;
-   
-   public ArquillianServerManager(int startTimeout, int shutdownTimeout)
-   {
-      super();
-      this.startupTimeout = startTimeout;
-      this.shutdownTimeout = shutdownTimeout;
-   }
-   
-   /* (non-Javadoc)
-    * @see org.jboss.jbossas.servermanager.ServerManager#getStartupTimeout()
-    */
-   @Override
-   public int getStartupTimeout()
-   {
-      return startupTimeout;
-   }
-   
-   /* (non-Javadoc)
-    * @see org.jboss.jbossas.servermanager.ServerManager#getShutdownTimeout()
-    */
-   @Override
-   public int getShutdownTimeout()
-   {
-      return shutdownTimeout;
-   }
+public class ArquillianServerManager extends ServerManager {
+    private int startupTimeout;
+    private int shutdownTimeout;
+
+    public ArquillianServerManager(int startTimeout, int shutdownTimeout) {
+        super();
+        this.startupTimeout = startTimeout;
+        this.shutdownTimeout = shutdownTimeout;
+    }
+
+    /* (non-Javadoc)
+     * @see org.jboss.jbossas.servermanager.ServerManager#getStartupTimeout()
+     */
+    @Override
+    public int getStartupTimeout() {
+        return startupTimeout;
+    }
+
+    /* (non-Javadoc)
+     * @see org.jboss.jbossas.servermanager.ServerManager#getShutdownTimeout()
+     */
+    @Override
+    public int getShutdownTimeout() {
+        return shutdownTimeout;
+    }
 }

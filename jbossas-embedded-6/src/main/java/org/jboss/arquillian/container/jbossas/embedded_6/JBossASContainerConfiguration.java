@@ -25,43 +25,37 @@ import org.jboss.arquillian.container.spi.client.container.ContainerConfiguratio
  * @author <a href="mailto:aslak@redhat.com">Aslak Knutsen</a>
  * @version $Revision: $
  */
-public class JBossASContainerConfiguration implements ContainerConfiguration
-{
-   /**
-    * The profile to start. 
-    */
-   private String profileName = "default";
+public class JBossASContainerConfiguration implements ContainerConfiguration {
+    /**
+     * The profile to start.
+     */
+    private String profileName = "default";
 
-   /**
-    * Address the server should bind to. 
-    */
-   private String bindAddress = "localhost";
-      
-   /* (non-Javadoc)
-    * @see org.jboss.arquillian.spi.client.container.ContainerConfiguration#validate()
-    */
-   @Override
-   public void validate() throws ConfigurationException
-   {  
-   }
-   
-   public String getProfileName()
-   {
-      return profileName;
-   }
-   
-   public void setProfileName(String profileName)
-   {
-      this.profileName = profileName;
-   }
-   
-   public String getBindAddress()
-   {
-      return bindAddress;
-   }
-   
-   public void setBindAddress(String bindAddress)
-   {
-      this.bindAddress = bindAddress;
-   }
+    /**
+     * Address the server should bind to.
+     */
+    private String bindAddress = "localhost";
+
+    /* (non-Javadoc)
+     * @see org.jboss.arquillian.spi.client.container.ContainerConfiguration#validate()
+     */
+    @Override
+    public void validate() throws ConfigurationException {
+    }
+
+    public String getProfileName() {
+        return profileName;
+    }
+
+    public void setProfileName(String profileName) {
+        this.profileName = profileName;
+    }
+
+    public String getBindAddress() {
+        return bindAddress;
+    }
+
+    public void setBindAddress(String bindAddress) {
+        this.bindAddress = bindAddress;
+    }
 }

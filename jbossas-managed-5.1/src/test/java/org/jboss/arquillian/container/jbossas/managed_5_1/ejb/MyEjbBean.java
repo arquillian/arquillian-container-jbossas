@@ -27,13 +27,11 @@ import javax.ejb.Stateless;
  */
 @Stateless
 @Local(MyEjb.class)
-public class MyEjbBean implements MyEjb
-{
-   /* (non-Javadoc)
-    * @see org.jboss.arquillian.jboss.ejb.MyEjb#getName()
-    */
-   public String getName() 
-   {
-      return "aslak";
-   }
+public class MyEjbBean implements MyEjb {
+    /* (non-Javadoc)
+     * @see org.jboss.arquillian.jboss.ejb.MyEjb#getName()
+     */
+    public String getName() {
+        return "aslak";
+    }
 }

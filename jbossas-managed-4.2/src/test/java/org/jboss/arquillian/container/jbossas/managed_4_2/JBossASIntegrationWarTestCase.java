@@ -35,23 +35,19 @@ import org.junit.runner.RunWith;
  * @version $Revision: $
  */
 @RunWith(Arquillian.class)
-public class JBossASIntegrationWarTestCase
-{
-   @Deployment
-   public static WebArchive createDeployment() throws Exception 
-   {
-      return ShrinkWrap.create(WebArchive.class);
-   }
-   
-   @Resource(mappedName = "UserTransaction")
-   private UserTransaction transaction;
-   
-   @Test
-   public void shouldBeAbleToInjectAInContainerResource() throws Exception 
-   {
-      Assert.assertNotNull(
+public class JBossASIntegrationWarTestCase {
+    @Deployment
+    public static WebArchive createDeployment() throws Exception {
+        return ShrinkWrap.create(WebArchive.class);
+    }
+
+    @Resource(mappedName = "UserTransaction")
+    private UserTransaction transaction;
+
+    @Test
+    public void shouldBeAbleToInjectAInContainerResource() throws Exception {
+        Assert.assertNotNull(
             "Verify that the Resource has been injected",
             transaction);
-      
-   }
+    }
 }

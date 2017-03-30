@@ -36,50 +36,43 @@ import org.junit.Test;
  * @version $Revision: $
  */
 @Ignore // not automated
-public class ProfileServiceTestCase
-{
+public class ProfileServiceTestCase {
 
-   @Test
-   public void shouldBeAbleToExtractData() throws Exception
-   {
-      InitialContext ctx = createContext();
-      MBeanServerConnection serverConnection = getServerConnection(ctx);
+    @Test
+    public void shouldBeAbleToExtractData() throws Exception {
+        InitialContext ctx = createContext();
+        MBeanServerConnection serverConnection = getServerConnection(ctx);
 
-      String deploymentName = "test.ear";
+        String deploymentName = "test.ear";
 
-      ProtocolMetaData metaData = ManagementViewParser.parse(deploymentName, serverConnection);
-      
-      Assert.assertNotNull(metaData);
-      
-      HTTPContext context = metaData.getContext(HTTPContext.class);
-      Assert.assertNotNull(context);
-      
-      Assert.assertEquals("127.0.0.1", context.getHost());
-      Assert.assertEquals(8080, context.getPort());
-      
-      // jsp/default not included
-      Assert.assertEquals(1, context.getServlets().size());
-   }
+        ProtocolMetaData metaData = ManagementViewParser.parse(deploymentName, serverConnection);
 
-   
-   private InitialContext createContext() throws Exception
-   {
-         Properties props = new Properties();
-         props.put(InitialContext.INITIAL_CONTEXT_FACTORY, "org.jnp.interfaces.NamingContextFactory");
-         props.put(InitialContext.URL_PKG_PREFIXES, "org.jboss.naming:org.jnp.interfaces");
-         props.put(InitialContext.PROVIDER_URL, "jnp://localhost:1099");
-         return new InitialContext(props);
-   }
-   
-   public MBeanServerConnection getServerConnection(InitialContext context) throws Exception
-   {
-      String adapterName = "jmx/rmi/RMIAdaptor";
-      Object obj = context.lookup(adapterName);
-      if ( obj == null )
-      {
-         throw new NameNotFoundException("Object " + adapterName + " not found.");
-      }
-      return (MBeanServerConnection)obj;
-   }
+        Assert.assertNotNull(metaData);
 
+        HTTPContext context = metaData.getContext(HTTPContext.class);
+        Assert.assertNotNull(context);
+
+        Assert.assertEquals("127.0.0.1", context.getHost());
+        Assert.assertEquals(8080, context.getPort());
+
+        // jsp/default not included
+        Assert.assertEquals(1, context.getServlets().size());
+    }
+
+    private InitialContext createContext() throws Exception {
+        Properties props = new Properties();
+        props.put(InitialContext.INITIAL_CONTEXT_FACTORY, "org.jnp.interfaces.NamingContextFactory");
+        props.put(InitialContext.URL_PKG_PREFIXES, "org.jboss.naming:org.jnp.interfaces");
+        props.put(InitialContext.PROVIDER_URL, "jnp://localhost:1099");
+        return new InitialContext(props);
+    }
+
+    public MBeanServerConnection getServerConnection(InitialContext context) throws Exception {
+        String adapterName = "jmx/rmi/RMIAdaptor";
+        Object obj = context.lookup(adapterName);
+        if (obj == null) {
+            throw new NameNotFoundException("Object " + adapterName + " not found.");
+        }
+        return (MBeanServerConnection) obj;
+    }
 }

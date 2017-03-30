@@ -40,34 +40,31 @@ import org.junit.runner.RunWith;
  * @version $Revision: $
  */
 @RunWith(Arquillian.class)
-public class JBossASIntegrationEarTestCase
-{
-   @Deployment
-   public static EnterpriseArchive createDeployment() throws Exception 
-   {
-      String applicationXml = Descriptors.create(ApplicationDescriptor.class, "application.xml")
+public class JBossASIntegrationEarTestCase {
+    @Deployment
+    public static EnterpriseArchive createDeployment() throws Exception {
+        String applicationXml = Descriptors.create(ApplicationDescriptor.class, "application.xml")
             .createModule().ejb("test.jar").up().exportAsString();
-      
-      return ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
-               .addAsModule(
-                     ShrinkWrap.create(JavaArchive.class, "test.jar")
-                        .addClasses(
-                              JBossASIntegrationEarTestCase.class,
-                              MyEjb.class, MyEjbBean.class)
-                         )
-               .setApplicationXML(new StringAsset(applicationXml));
-   }
-   
-   @EJB
-   private MyEjb instanceVariable;
-   
-   @Test
-   public void shouldBeAbleToInjectEJBAsInstanceVariable() throws Exception 
-   {
-      Assert.assertNotNull(
+
+        return ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
+            .addAsModule(
+                ShrinkWrap.create(JavaArchive.class, "test.jar")
+                    .addClasses(
+                        JBossASIntegrationEarTestCase.class,
+                        MyEjb.class, MyEjbBean.class)
+            )
+            .setApplicationXML(new StringAsset(applicationXml));
+    }
+
+    @EJB
+    private MyEjb instanceVariable;
+
+    @Test
+    public void shouldBeAbleToInjectEJBAsInstanceVariable() throws Exception {
+        Assert.assertNotNull(
             "Verify that the Bean has been injected",
             instanceVariable);
-      
-      Assert.assertEquals("aslak", instanceVariable.getName());
-   }
+
+        Assert.assertEquals("aslak", instanceVariable.getName());
+    }
 }

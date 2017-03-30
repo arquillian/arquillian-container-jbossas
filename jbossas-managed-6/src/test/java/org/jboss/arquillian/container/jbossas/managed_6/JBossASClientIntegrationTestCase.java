@@ -34,23 +34,20 @@ import org.junit.runner.RunWith;
  * @version $Revision: $
  */
 @RunWith(Arquillian.class)
-public class JBossASClientIntegrationTestCase
-{
-   @Deployment(testable = false)
-   public static JavaArchive createDeployment() throws Exception 
-   {
-      return ShrinkWrap.create(JavaArchive.class, "test.jar")
-         .addClass(JBossASClientIntegrationTestCase.class);
-   }
-   
-   @Resource(mappedName = "ProfileService")
-   private ProfileService profileService;
-   
-   @Test
-   public void shouldBeAbleToInjectEJBAsInstanceVariable() throws Exception 
-   {
-      Assert.assertNotNull(
+public class JBossASClientIntegrationTestCase {
+    @Deployment(testable = false)
+    public static JavaArchive createDeployment() throws Exception {
+        return ShrinkWrap.create(JavaArchive.class, "test.jar")
+            .addClass(JBossASClientIntegrationTestCase.class);
+    }
+
+    @Resource(mappedName = "ProfileService")
+    private ProfileService profileService;
+
+    @Test
+    public void shouldBeAbleToInjectEJBAsInstanceVariable() throws Exception {
+        Assert.assertNotNull(
             "Verify that the ProfileService has been injected on client",
             profileService);
-   }
+    }
 }

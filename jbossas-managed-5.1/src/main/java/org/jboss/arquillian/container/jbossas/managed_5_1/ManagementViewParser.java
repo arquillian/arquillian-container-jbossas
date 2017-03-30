@@ -35,81 +35,69 @@ import org.jboss.profileservice.spi.ProfileService;
  * @author <a href="mailto:aslak@redhat.com">Aslak Knutsen</a>
  * @version $Revision: $
  */
-public final class ManagementViewParser
-{
-   public static ProtocolMetaData parse(String archiveName, ProfileService profile)
-      throws Exception
-   {
-      ProtocolMetaData metaData = new ProtocolMetaData();
-      
-      ManagementView management = profile.getViewManager();
-      management.load();
+public final class ManagementViewParser {
+    public static ProtocolMetaData parse(String archiveName, ProfileService profile)
+        throws Exception {
+        ProtocolMetaData metaData = new ProtocolMetaData();
 
-      // extract server info
-      HTTPContext httpContext = extractHTTPContext(management);
-      if(httpContext != null)
-      {
-         metaData.addContext(httpContext);
-      }
-      
-      // extract deployment content
-      scanDeployment(management, httpContext, management.getDeployment(archiveName));
+        ManagementView management = profile.getViewManager();
+        management.load();
 
-      return metaData;
-   }
-   
-   /**
-    * @param management
-    * @return
-    */
-   private static HTTPContext extractHTTPContext(ManagementView management) throws Exception
-   {
-      Set<String> contextRootDeployments = management.getMatchingDeploymentName("http\\-.*");
-      if(contextRootDeployments.size() > 0)
-      {
-         String deploymentName = contextRootDeployments.iterator().next();
-         String expression = ".*\\-.*?(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})-(.*)";
-         return new HTTPContext(
-               deploymentName.replaceAll(expression, "$1"), 
-               Integer.parseInt(deploymentName.replaceAll(expression, "$2")));
-      }
-      return null;
-   }
+        // extract server info
+        HTTPContext httpContext = extractHTTPContext(management);
+        if (httpContext != null) {
+            metaData.addContext(httpContext);
+        }
 
-   private static void scanDeployment(ManagementView management, HTTPContext context, ManagedDeployment parent)
-      throws NoSuchDeploymentException
-   {
-      Map<String, ManagedComponent> components = parent.getComponents();
-      for(Map.Entry<String, ManagedComponent> entry : components.entrySet())
-      {
-         ManagedComponent value = entry.getValue();
-         if(value.getType().getType().equals("WAR"))
-         {
-            scanWar(management, context, value);
-         }
-      }
-      for(ManagedDeployment child : parent.getChildren())
-      {
-         scanDeployment(management, context, child);
-      }
-   }
+        // extract deployment content
+        scanDeployment(management, httpContext, management.getDeployment(archiveName));
 
-   private static void scanWar(ManagementView management, HTTPContext context, ManagedComponent value) throws NoSuchDeploymentException
-   {
-      String contextRoot = value.getProperty("contextRoot").getField("value", String.class);
-      Set<String> contextRootDeployments = management.getMatchingDeploymentName("//.*" + contextRoot);
-      for(String contextRootDeployment : contextRootDeployments)
-      {
-         ManagedDeployment warDeployment = management.getDeployment(contextRootDeployment);
-         for(Map.Entry<String, ManagedComponent> warComponentEntry : warDeployment.getComponents().entrySet())
-         {
-            ManagedComponent comp = warComponentEntry.getValue();
-            if(comp.getType().getSubtype().equals("Servlet"))
-            {
-               String servletName = comp.getNameType().replaceFirst(".*,name=(.*)", "$1");
-               context.add(new Servlet(servletName, contextRoot));
+        return metaData;
+    }
+
+    /**
+     * @param management
+     * @return
+     */
+    private static HTTPContext extractHTTPContext(ManagementView management) throws Exception {
+        Set<String> contextRootDeployments = management.getMatchingDeploymentName("http\\-.*");
+        if (contextRootDeployments.size() > 0) {
+            String deploymentName = contextRootDeployments.iterator().next();
+            String expression = ".*\\-.*?(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})-(.*)";
+            return new HTTPContext(
+                deploymentName.replaceAll(expression, "$1"),
+                Integer.parseInt(deploymentName.replaceAll(expression, "$2")));
+        }
+        return null;
+    }
+
+    private static void scanDeployment(ManagementView management, HTTPContext context, ManagedDeployment parent)
+        throws NoSuchDeploymentException {
+        Map<String, ManagedComponent> components = parent.getComponents();
+        for (Map.Entry<String, ManagedComponent> entry : components.entrySet()) {
+            ManagedComponent value = entry.getValue();
+            if (value.getType().getType().equals("WAR")) {
+                scanWar(management, context, value);
             }
-         }
-      }
-   }
+        }
+        for (ManagedDeployment child : parent.getChildren()) {
+            scanDeployment(management, context, child);
+        }
+    }
+
+    private static void scanWar(ManagementView management, HTTPContext context, ManagedComponent value)
+        throws NoSuchDeploymentException {
+        String contextRoot = value.getProperty("contextRoot").getField("value", String.class);
+        Set<String> contextRootDeployments = management.getMatchingDeploymentName("//.*" + contextRoot);
+        for (String contextRootDeployment : contextRootDeployments) {
+            ManagedDeployment warDeployment = management.getDeployment(contextRootDeployment);
+            for (Map.Entry<String, ManagedComponent> warComponentEntry : warDeployment.getComponents().entrySet()) {
+                ManagedComponent comp = warComponentEntry.getValue();
+                if (comp.getType().getSubtype().equals("Servlet")) {
+                    String servletName = comp.getNameType().replaceFirst(".*,name=(.*)", "$1");
+                    context.add(new Servlet(servletName, contextRoot));
+                }
+            }
+        }
+    }
 }

@@ -51,225 +51,184 @@ import org.jboss.shrinkwrap.descriptor.api.Descriptor;
  * @author Davide D'Alto
  * @version $Revision: $
  */
-public class JBossASRemoteContainer implements DeployableContainer<JBossASConfiguration>
-{
-   private static final TargetModuleID[] EMPTY_ARRAY = new TargetModuleID[0];
-   
-   private JBossASConfiguration configuration;
+public class JBossASRemoteContainer implements DeployableContainer<JBossASConfiguration> {
+    private static final TargetModuleID[] EMPTY_ARRAY = new TargetModuleID[0];
 
-   private DeploymentManager deploymentManager;
-   
-   @Inject @ContainerScoped 
-   private InstanceProducer<Context> contextInst;
-   
-   private MBeanServerConnection serverConnection;
-   
-   private TargetModuleID[] targetModuleIDs = EMPTY_ARRAY;
+    private JBossASConfiguration configuration;
 
-   @Override
-   public Class<JBossASConfiguration> getConfigurationClass()
-   {
-      return JBossASConfiguration.class;
-   }
+    private DeploymentManager deploymentManager;
 
-   @Override
-   public ProtocolDescription getDefaultProtocol()
-   {
-      return new ProtocolDescription("Servlet 2.5");
-   }
-   
-   @Override
-   public void setup(JBossASConfiguration configuration)
-   {
-      this.configuration = configuration;
-   }
+    @Inject @ContainerScoped
+    private InstanceProducer<Context> contextInst;
 
-   @Override
-   public void start() throws LifecycleException
-   {
-      try
-      {
-         createContext();
-         deploymentManager = createDeploymentManager();
-      }
-      catch (Exception e)
-      {
-         throw new LifecycleException("Could not connect to container", e);
-      }
-   }
-   
-   private Context createContext() throws Exception
-   {
-      if (contextInst.get() == null)
-      {
-         Properties props = new Properties();
-         props.put(InitialContext.INITIAL_CONTEXT_FACTORY, configuration.getContextFactory());
-         props.put(InitialContext.URL_PKG_PREFIXES, configuration.getUrlPkgPrefix());
-         props.put(InitialContext.PROVIDER_URL, configuration.getProviderUrl());
-         contextInst.set(new InitialContext(props));
-      }
-      return contextInst.get();
-   }
-   
-   private DeploymentManager createDeploymentManager() throws DeploymentManagerCreationException
-   {
-      DeploymentFactoryManager dfm = DeploymentFactoryManager.getInstance();
-      return dfm.getDeploymentManager(configuration.getProviderUrl(), null, null);
-   }
+    private MBeanServerConnection serverConnection;
 
-   @Override
-   public void deploy(Descriptor descriptor) throws DeploymentException
-   {
-      URL deploymentUrl = ShrinkWrapUtil.toURL(descriptor);
-      deploy(new File(deploymentUrl.getFile()));
-   }
- 
-   @Override
-   public ProtocolMetaData deploy(final Archive<?> archive) throws DeploymentException
-   {
-      if (archive == null)
-      {
-         throw new IllegalArgumentException("Archive must be specified");
-      }
+    private TargetModuleID[] targetModuleIDs = EMPTY_ARRAY;
 
-      File deployment = ShrinkWrapUtil.toFile(archive);
-      targetModuleIDs = deploy(deployment);
+    @Override
+    public Class<JBossASConfiguration> getConfigurationClass() {
+        return JBossASConfiguration.class;
+    }
 
-      try
-      {
-         return ManagementViewParser.parse(archive.getName(), getServerConnection());
-      }
-      catch (Exception e)
-      {
-         throw new DeploymentException("Could not extract deployment metadata", e);
-      }
-   }
+    @Override
+    public ProtocolDescription getDefaultProtocol() {
+        return new ProtocolDescription("Servlet 2.5");
+    }
 
-   private TargetModuleID[] deploy(File deployment) throws DeploymentException
-   {
-      ProgressObject progress;
-      try
-      {
-         File deploymentPlan = ShrinkWrapUtil.createDeploymentPlan(deployment);
-         progress = deploymentManager.distribute(deploymentManager.getTargets(), deployment, deploymentPlan);
-      }
-      catch (IOException e)
-      {
-         throw new DeploymentException("Failed to deploy " + deployment.getName(), e);
-      }
-      DeploymentStatus status = progress.getDeploymentStatus();
-      if (status.getState() == StateType.FAILED)
-      {
-         throw new DeploymentException("Failed to deploy " + deployment.getName() + ": " + status.getMessage());
-      }
-      waitForCompletion(status);
+    @Override
+    public void setup(JBossASConfiguration configuration) {
+        this.configuration = configuration;
+    }
 
-      // Start the modules whose IDs are returned by the "distribute" operation.:
-      TargetModuleID[] moduleIDs = progress.getResultTargetModuleIDs();
-      progress = deploymentManager.start(moduleIDs);
-      status = progress.getDeploymentStatus();
-      waitForCompletion(status);
-      
-      return progress.getResultTargetModuleIDs();
-   }
-   
-   @Override
-   public void undeploy(final Archive<?> archive) throws DeploymentException
-   {
-      if (archive == null)
-      {
-         throw new IllegalArgumentException("Archive must be specified");
-      }
-      
-      try
-      {
-         undeploy();
-      }
-      catch (Exception e)
-      {
-         throw new DeploymentException("Could not undeploy " + archive.getName(), e);
-      }
-   }
-   
-   @Override
-   public void undeploy(Descriptor descriptor) throws DeploymentException
-   {
-      try
-      {
-         undeploy();
-      }
-      catch (Exception e)
-      {
-         throw new DeploymentException("Could not undeploy " + descriptor.getDescriptorName(), e);
-      }
-   }
+    @Override
+    public void start() throws LifecycleException {
+        try {
+            createContext();
+            deploymentManager = createDeploymentManager();
+        } catch (Exception e) {
+            throw new LifecycleException("Could not connect to container", e);
+        }
+    }
 
-   private void undeploy() throws DeploymentException
-   {
-      if (targetModuleIDs.length == 0)
-         return;
-      
-      ProgressObject stopProgress = deploymentManager.stop(targetModuleIDs);
-      DeploymentStatus stopStatus = stopProgress.getDeploymentStatus();
-      waitForCompletion(stopStatus);
-      if (isNotCompleted(stopStatus))
-      {
-         throw new DeploymentException("Stop deployment not completed: " + stopStatus.getMessage());
-      }
+    private Context createContext() throws Exception {
+        if (contextInst.get() == null) {
+            Properties props = new Properties();
+            props.put(InitialContext.INITIAL_CONTEXT_FACTORY, configuration.getContextFactory());
+            props.put(InitialContext.URL_PKG_PREFIXES, configuration.getUrlPkgPrefix());
+            props.put(InitialContext.PROVIDER_URL, configuration.getProviderUrl());
+            contextInst.set(new InitialContext(props));
+        }
+        return contextInst.get();
+    }
 
-      ProgressObject undeployProgress = deploymentManager.undeploy(targetModuleIDs);
-      DeploymentStatus undeployStatus = undeployProgress.getDeploymentStatus();
-      waitForCompletion(undeployStatus);
-      if (isNotCompleted(undeployStatus))
-      {
-         throw new DeploymentException("Undeploy not completed: " + undeployStatus.getMessage());
-      }
+    private DeploymentManager createDeploymentManager() throws DeploymentManagerCreationException {
+        DeploymentFactoryManager dfm = DeploymentFactoryManager.getInstance();
+        return dfm.getDeploymentManager(configuration.getProviderUrl(), null, null);
+    }
 
-      targetModuleIDs = EMPTY_ARRAY;
-   }
+    @Override
+    public void deploy(Descriptor descriptor) throws DeploymentException {
+        URL deploymentUrl = ShrinkWrapUtil.toURL(descriptor);
+        deploy(new File(deploymentUrl.getFile()));
+    }
 
-   @Override
-   public void stop() throws LifecycleException
-   {
-   }
+    @Override
+    public ProtocolMetaData deploy(final Archive<?> archive) throws DeploymentException {
+        if (archive == null) {
+            throw new IllegalArgumentException("Archive must be specified");
+        }
 
-   private boolean isNotCompleted(DeploymentStatus status)
-   {
-      return StateType.COMPLETED != status.getState();
-   }
+        File deployment = ShrinkWrapUtil.toFile(archive);
+        targetModuleIDs = deploy(deployment);
 
-   /**
-    * Wait for completion of a DeploymentStatus (wait as long as the "StateType" is "RUNNING")
-    * 
-    * @param status This is the DeploymentStatus on whose completion we wait.
-    * @throws DeploymentException 
-    */
-   private static void waitForCompletion(DeploymentStatus status) throws DeploymentException
-   {
-      try
-      {
-         while (StateType.RUNNING == status.getState())
-            Thread.sleep(100);
-      }
-      catch (InterruptedException e)
-      {
-         throw new DeploymentException("Failed to deploy: " + e.getMessage());
-      }
-   }
-   
-   private MBeanServerConnection getServerConnection() throws Exception
-   {
-      String adapterName = "jmx/rmi/RMIAdaptor";
-      if (serverConnection == null)
-      {
-         Object obj = createContext().lookup(adapterName);
-         if (obj == null)
-         {
-            throw new NameNotFoundException("Object " + adapterName + " not found.");
-         }
+        try {
+            return ManagementViewParser.parse(archive.getName(), getServerConnection());
+        } catch (Exception e) {
+            throw new DeploymentException("Could not extract deployment metadata", e);
+        }
+    }
 
-         serverConnection = ((MBeanServerConnection) obj);
-      }
-      return serverConnection;
-   }
+    private TargetModuleID[] deploy(File deployment) throws DeploymentException {
+        ProgressObject progress;
+        try {
+            File deploymentPlan = ShrinkWrapUtil.createDeploymentPlan(deployment);
+            progress = deploymentManager.distribute(deploymentManager.getTargets(), deployment, deploymentPlan);
+        } catch (IOException e) {
+            throw new DeploymentException("Failed to deploy " + deployment.getName(), e);
+        }
+        DeploymentStatus status = progress.getDeploymentStatus();
+        if (status.getState() == StateType.FAILED) {
+            throw new DeploymentException("Failed to deploy " + deployment.getName() + ": " + status.getMessage());
+        }
+        waitForCompletion(status);
+
+        // Start the modules whose IDs are returned by the "distribute" operation.:
+        TargetModuleID[] moduleIDs = progress.getResultTargetModuleIDs();
+        progress = deploymentManager.start(moduleIDs);
+        status = progress.getDeploymentStatus();
+        waitForCompletion(status);
+
+        return progress.getResultTargetModuleIDs();
+    }
+
+    @Override
+    public void undeploy(final Archive<?> archive) throws DeploymentException {
+        if (archive == null) {
+            throw new IllegalArgumentException("Archive must be specified");
+        }
+
+        try {
+            undeploy();
+        } catch (Exception e) {
+            throw new DeploymentException("Could not undeploy " + archive.getName(), e);
+        }
+    }
+
+    @Override
+    public void undeploy(Descriptor descriptor) throws DeploymentException {
+        try {
+            undeploy();
+        } catch (Exception e) {
+            throw new DeploymentException("Could not undeploy " + descriptor.getDescriptorName(), e);
+        }
+    }
+
+    private void undeploy() throws DeploymentException {
+        if (targetModuleIDs.length == 0)
+            return;
+
+        ProgressObject stopProgress = deploymentManager.stop(targetModuleIDs);
+        DeploymentStatus stopStatus = stopProgress.getDeploymentStatus();
+        waitForCompletion(stopStatus);
+        if (isNotCompleted(stopStatus)) {
+            throw new DeploymentException("Stop deployment not completed: " + stopStatus.getMessage());
+        }
+
+        ProgressObject undeployProgress = deploymentManager.undeploy(targetModuleIDs);
+        DeploymentStatus undeployStatus = undeployProgress.getDeploymentStatus();
+        waitForCompletion(undeployStatus);
+        if (isNotCompleted(undeployStatus)) {
+            throw new DeploymentException("Undeploy not completed: " + undeployStatus.getMessage());
+        }
+
+        targetModuleIDs = EMPTY_ARRAY;
+    }
+
+    @Override
+    public void stop() throws LifecycleException {
+    }
+
+    private boolean isNotCompleted(DeploymentStatus status) {
+        return StateType.COMPLETED != status.getState();
+    }
+
+    /**
+     * Wait for completion of a DeploymentStatus (wait as long as the "StateType" is "RUNNING")
+     *
+     * @param status
+     *     This is the DeploymentStatus on whose completion we wait.
+     *
+     * @throws DeploymentException
+     */
+    private static void waitForCompletion(DeploymentStatus status) throws DeploymentException {
+        try {
+            while (StateType.RUNNING == status.getState())
+                Thread.sleep(100);
+        } catch (InterruptedException e) {
+            throw new DeploymentException("Failed to deploy: " + e.getMessage());
+        }
+    }
+
+    private MBeanServerConnection getServerConnection() throws Exception {
+        String adapterName = "jmx/rmi/RMIAdaptor";
+        if (serverConnection == null) {
+            Object obj = createContext().lookup(adapterName);
+            if (obj == null) {
+                throw new NameNotFoundException("Object " + adapterName + " not found.");
+            }
+
+            serverConnection = ((MBeanServerConnection) obj);
+        }
+        return serverConnection;
+    }
 }

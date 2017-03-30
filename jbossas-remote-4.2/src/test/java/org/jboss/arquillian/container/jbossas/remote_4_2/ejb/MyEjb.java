@@ -19,14 +19,11 @@ package org.jboss.arquillian.container.jbossas.remote_4_2.ejb;
 import javax.ejb.Remote;
 
 /**
- *
  * @author <a href="mailto:aslak@redhat.com">Aslak Knutsen</a>
  * @version $Revision: $
  */
 @Remote
-public interface MyEjb
-{
+public interface MyEjb {
 
-   public String getName();
-
+    public String getName();
 }

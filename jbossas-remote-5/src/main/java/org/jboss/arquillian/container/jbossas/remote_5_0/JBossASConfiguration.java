@@ -27,82 +27,75 @@ import org.jboss.arquillian.container.spi.client.container.ContainerConfiguratio
  * @author <a href="mailto:aslak@redhat.com">Aslak Knutsen</a>
  * @version $Revision: $
  */
-public class JBossASConfiguration implements ContainerConfiguration
-{
-   /**
-    * ProfileService profileKey. Used to load the correct profile into the DeploymentManager.  
-    */
-   private String profileName = "default";
-      
-   private String contextFactory = "org.jnp.interfaces.NamingContextFactory";
-   
-   private String urlPkgPrefix = "org.jboss.naming:org.jnp.interfaces";
-   
-   private String providerUrl = "jnp://localhost:1099";
+public class JBossASConfiguration implements ContainerConfiguration {
+    /**
+     * ProfileService profileKey. Used to load the correct profile into the DeploymentManager.
+     */
+    private String profileName = "default";
 
-   /* (non-Javadoc)
-    * @see org.jboss.arquillian.spi.client.container.ContainerConfiguration#validate()
-    */
-   @Override
-   public void validate() throws ConfigurationException
-   {
-   }
-   
-   public String getProfileName()
-   {
-      return profileName;
-   }
-   
-   public void setProfileName(String profileName)
-   {
-      this.profileName = profileName;
-   }
+    private String contextFactory = "org.jnp.interfaces.NamingContextFactory";
 
-   /**
-    * @param contextFactory the contextFactory to set
-    */
-   public void setContextFactory(String contextFactory)
-   {
-      this.contextFactory = contextFactory;
-   }
-   
-   /**
-    * @return the contextFactory
-    */
-   public String getContextFactory()
-   {
-      return contextFactory;
-   }
-   
-   /**
-    * @param provierUrl the provierUrl to set
-    */
-   public void setProviderUrl(String provierUrl)
-   {
-      this.providerUrl = provierUrl;
-   }
-   
-   /**
-    * @return the provierUrl
-    */
-   public String getProviderUrl()
-   {
-      return providerUrl;
-   }
-   
-   /**
-    * @param urlPkgPrefix the urlPkgPrefix to set
-    */
-   public void setUrlPkgPrefix(String urlPkgPrefix)
-   {
-      this.urlPkgPrefix = urlPkgPrefix;
-   }
-   
-   /**
-    * @return the urlPkgPrefix
-    */
-   public String getUrlPkgPrefix()
-   {
-      return urlPkgPrefix;
-   }
+    private String urlPkgPrefix = "org.jboss.naming:org.jnp.interfaces";
+
+    private String providerUrl = "jnp://localhost:1099";
+
+    /* (non-Javadoc)
+     * @see org.jboss.arquillian.spi.client.container.ContainerConfiguration#validate()
+     */
+    @Override
+    public void validate() throws ConfigurationException {
+    }
+
+    public String getProfileName() {
+        return profileName;
+    }
+
+    public void setProfileName(String profileName) {
+        this.profileName = profileName;
+    }
+
+    /**
+     * @param contextFactory
+     *     the contextFactory to set
+     */
+    public void setContextFactory(String contextFactory) {
+        this.contextFactory = contextFactory;
+    }
+
+    /**
+     * @return the contextFactory
+     */
+    public String getContextFactory() {
+        return contextFactory;
+    }
+
+    /**
+     * @param provierUrl
+     *     the provierUrl to set
+     */
+    public void setProviderUrl(String provierUrl) {
+        this.providerUrl = provierUrl;
+    }
+
+    /**
+     * @return the provierUrl
+     */
+    public String getProviderUrl() {
+        return providerUrl;
+    }
+
+    /**
+     * @param urlPkgPrefix
+     *     the urlPkgPrefix to set
+     */
+    public void setUrlPkgPrefix(String urlPkgPrefix) {
+        this.urlPkgPrefix = urlPkgPrefix;
+    }
+
+    /**
+     * @return the urlPkgPrefix
+     */
+    public String getUrlPkgPrefix() {
+        return urlPkgPrefix;
+    }
 }

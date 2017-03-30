@@ -53,324 +53,270 @@ import org.jboss.shrinkwrap.descriptor.api.Descriptor;
  * @author <a href="mailto:aamonten@gmail.com">Alejandro Montenegro</a>
  * @version $Revision: $
  */
-public class JBossASLocalContainer implements DeployableContainer<JBossASConfiguration>
-{
-   private static Logger log = Logger.getLogger(JBossASLocalContainer.class.getName());
-   
-   // ProfileKey name which supports hot deployment 
-   private static final String DEFAULT_PROFILE_KEY_NAME = "applications"; 
+public class JBossASLocalContainer implements DeployableContainer<JBossASConfiguration> {
+    private static Logger log = Logger.getLogger(JBossASLocalContainer.class.getName());
 
-   private JBossASConfiguration configuration;
+    // ProfileKey name which supports hot deployment
+    private static final String DEFAULT_PROFILE_KEY_NAME = "applications";
 
-   protected ServerManager manager;
+    private JBossASConfiguration configuration;
 
-   private final List<String> failedUndeployments = new ArrayList<String>();
+    protected ServerManager manager;
 
-   private ProfileService profileService;
-   private DeploymentManager deploymentManager;
+    private final List<String> failedUndeployments = new ArrayList<String>();
 
-   @Inject @ContainerScoped
-   private InstanceProducer<Context> contextInst;
+    private ProfileService profileService;
+    private DeploymentManager deploymentManager;
 
-   @Override
-   public ProtocolDescription getDefaultProtocol()
-   {
-      return new ProtocolDescription("Servlet 2.5");
-   }
-   
-   @Override
-   public Class<JBossASConfiguration> getConfigurationClass()
-   {
-      return JBossASConfiguration.class;
-   }
-   
-   @Override
-   public void setup(JBossASConfiguration configuration)
-   {
-      this.configuration = configuration;
-      
-      manager = createAndConfigureServerManager();
-   }
-   
-   @Override
-   public void start() throws LifecycleException
-   {
-      try
-      {
-         Server server = manager.getServer(configuration.getProfileName());
-         if(ServerController.isServerStarted(server))
-         {
-            throw new LifecycleException(
-                  "The server is already running! " +
-                  "Managed containers does not support connecting to running server instances due to the " +
-                  "possible harmfull effect of connecting to the wrong server. Please stop server before running or " +
-                  "change to another type of container.");
-         }
-         
-         manager.startServer(server.getName());
-         initProfileService(server);
-      }
-      catch (Exception e)
-      {
-         throw new LifecycleException("Could not start remote container", e);
-      }
-   }
+    @Inject @ContainerScoped
+    private InstanceProducer<Context> contextInst;
 
-   @Override
-   public void stop() throws LifecycleException
-   {
-      Server server = manager.getServer(configuration.getProfileName());
-      if(!server.isRunning())
-      {
-         throw new LifecycleException("Can not stop server. Server is not started");
-      }
-      try
-      {
-         removeFailedUnDeployments();
-      }
-      catch (Exception e)
-      {
-         throw new LifecycleException("Could not clean up failed undeployments", e);
-      }
-      
-      try
-      {
-         manager.stopServer(server.getName());
-      } 
-      catch (Exception e) 
-      {
-         throw new LifecycleException("Could not stop server", e);
-      }
-   }
+    @Override
+    public ProtocolDescription getDefaultProtocol() {
+        return new ProtocolDescription("Servlet 2.5");
+    }
 
-   @Override
-   public void deploy(Descriptor descriptor) throws DeploymentException
-   {
-      String deploymentName = descriptor.getDescriptorName();
-      URL deploymentUrl = ShrinkWrapUtil.toURL(descriptor);
+    @Override
+    public Class<JBossASConfiguration> getConfigurationClass() {
+        return JBossASConfiguration.class;
+    }
 
-      deploy(deploymentName, deploymentUrl);
-   }
-   
-   @Override
-   public void undeploy(Descriptor descriptor) throws DeploymentException
-   {
-      undeploy(descriptor.getDescriptorName());
-   }
-   
-   @Override
-   public ProtocolMetaData deploy(final Archive<?> archive) throws DeploymentException
-   {
-      final String deploymentName = archive.getName();
-      URL deploymentUrl = ShrinkWrapUtil.toURL(archive);
+    @Override
+    public void setup(JBossASConfiguration configuration) {
+        this.configuration = configuration;
 
-      deploy(deploymentName, deploymentUrl);
-      try
-      {
-         return ManagementViewParser.parse(deploymentName, profileService);
-      }
-      catch (Exception e) 
-      {
-         throw new DeploymentException("Could not extract deployment metadata", e);
-      }
-   }
+        manager = createAndConfigureServerManager();
+    }
 
-   @Override
-   public void undeploy(final Archive<?> archive) throws DeploymentException
-   {
-      undeploy(archive.getName());
-   }
-
-   private void deploy(String deploymentName, URL url) throws DeploymentException
-   {
-      Exception failure = null;
-      try
-      {
-         DeploymentProgress distribute = deploymentManager.distribute(deploymentName, url, true);
-         distribute.run();
-         DeploymentStatus uploadStatus = distribute.getDeploymentStatus(); 
-         if(uploadStatus.isFailed()) 
-         {
-            failure = uploadStatus.getFailure();
-            undeploy(deploymentName);
-         } 
-         else 
-         {
-            DeploymentProgress progress = deploymentManager.start(deploymentName);
-            progress.run();
-            DeploymentStatus status = progress.getDeploymentStatus();
-            if (status.isFailed())
-            {
-               failure = status.getFailure();
-               undeploy(deploymentName);
+    @Override
+    public void start() throws LifecycleException {
+        try {
+            Server server = manager.getServer(configuration.getProfileName());
+            if (ServerController.isServerStarted(server)) {
+                throw new LifecycleException(
+                    "The server is already running! "
+                        +
+                        "Managed containers does not support connecting to running server instances due to the "
+                        +
+                        "possible harmfull effect of connecting to the wrong server. Please stop server before running or "
+                        +
+                        "change to another type of container.");
             }
-         }
-      }
-      catch (Exception e)
-      {
-         throw new DeploymentException("Could not deploy " + deploymentName, e);
-      }
-      if (failure != null)
-      {
-         throw new DeploymentException("Failed to deploy " + deploymentName, failure);
-      }
-   }
-   
-   private void undeploy(String name) throws DeploymentException
-   {
-      try
-      {
-         DeploymentProgress stopProgress = deploymentManager.stop(name);
-         stopProgress.run();
 
-         DeploymentProgress undeployProgress = deploymentManager.remove(name);
-         undeployProgress.run();
-         if (undeployProgress.getDeploymentStatus().isFailed())
-         {
-            failedUndeployments.add(name);
-         }
-      }
-      catch (Exception e)
-      {
-         throw new DeploymentException("Could not undeploy " + name, e);
-      }
-   }
+            manager.startServer(server.getName());
+            initProfileService(server);
+        } catch (Exception e) {
+            throw new LifecycleException("Could not start remote container", e);
+        }
+    }
 
-   private void removeFailedUnDeployments() throws IOException
-   {
-      Server server = manager.getServer(configuration.getProfileName());
-      
-      List<String> remainingDeployments = new ArrayList<String>();
-      for (String name : failedUndeployments)
-      {
-         try
-         {
-            server.undeploy(new File(name));
-         }
-         catch (Exception e)
-         {
-            IOException ioe = new IOException();
-            ioe.initCause(e);
-            throw ioe;
-         }
-      }
-      if (remainingDeployments.size() > 0)
-      {
-         log.severe("Failed to undeploy these artifacts: " + remainingDeployments);
-      }
-      failedUndeployments.clear();
-   }
+    @Override
+    public void stop() throws LifecycleException {
+        Server server = manager.getServer(configuration.getProfileName());
+        if (!server.isRunning()) {
+            throw new LifecycleException("Can not stop server. Server is not started");
+        }
+        try {
+            removeFailedUnDeployments();
+        } catch (Exception e) {
+            throw new LifecycleException("Could not clean up failed undeployments", e);
+        }
 
-   private void initProfileService(Server server) throws Exception 
-   {
-      Context ctx = server.getNamingContext();
-      contextInst.set(ctx);
-      profileService = (ProfileService) ctx.lookup("ProfileService");
+        try {
+            manager.stopServer(server.getName());
+        } catch (Exception e) {
+            throw new LifecycleException("Could not stop server", e);
+        }
+    }
 
-      deploymentManager = profileService.getDeploymentManager();
+    @Override
+    public void deploy(Descriptor descriptor) throws DeploymentException {
+        String deploymentName = descriptor.getDescriptorName();
+        URL deploymentUrl = ShrinkWrapUtil.toURL(descriptor);
 
-      ProfileKey defaultKey = new ProfileKey(DEFAULT_PROFILE_KEY_NAME);
-      
-      deploymentManager.loadProfile(defaultKey);
-   }
+        deploy(deploymentName, deploymentUrl);
+    }
+
+    @Override
+    public void undeploy(Descriptor descriptor) throws DeploymentException {
+        undeploy(descriptor.getDescriptorName());
+    }
+
+    @Override
+    public ProtocolMetaData deploy(final Archive<?> archive) throws DeploymentException {
+        final String deploymentName = archive.getName();
+        URL deploymentUrl = ShrinkWrapUtil.toURL(archive);
+
+        deploy(deploymentName, deploymentUrl);
+        try {
+            return ManagementViewParser.parse(deploymentName, profileService);
+        } catch (Exception e) {
+            throw new DeploymentException("Could not extract deployment metadata", e);
+        }
+    }
+
+    @Override
+    public void undeploy(final Archive<?> archive) throws DeploymentException {
+        undeploy(archive.getName());
+    }
+
+    private void deploy(String deploymentName, URL url) throws DeploymentException {
+        Exception failure = null;
+        try {
+            DeploymentProgress distribute = deploymentManager.distribute(deploymentName, url, true);
+            distribute.run();
+            DeploymentStatus uploadStatus = distribute.getDeploymentStatus();
+            if (uploadStatus.isFailed()) {
+                failure = uploadStatus.getFailure();
+                undeploy(deploymentName);
+            } else {
+                DeploymentProgress progress = deploymentManager.start(deploymentName);
+                progress.run();
+                DeploymentStatus status = progress.getDeploymentStatus();
+                if (status.isFailed()) {
+                    failure = status.getFailure();
+                    undeploy(deploymentName);
+                }
+            }
+        } catch (Exception e) {
+            throw new DeploymentException("Could not deploy " + deploymentName, e);
+        }
+        if (failure != null) {
+            throw new DeploymentException("Failed to deploy " + deploymentName, failure);
+        }
+    }
+
+    private void undeploy(String name) throws DeploymentException {
+        try {
+            DeploymentProgress stopProgress = deploymentManager.stop(name);
+            stopProgress.run();
+
+            DeploymentProgress undeployProgress = deploymentManager.remove(name);
+            undeployProgress.run();
+            if (undeployProgress.getDeploymentStatus().isFailed()) {
+                failedUndeployments.add(name);
+            }
+        } catch (Exception e) {
+            throw new DeploymentException("Could not undeploy " + name, e);
+        }
+    }
+
+    private void removeFailedUnDeployments() throws IOException {
+        Server server = manager.getServer(configuration.getProfileName());
+
+        List<String> remainingDeployments = new ArrayList<String>();
+        for (String name : failedUndeployments) {
+            try {
+                server.undeploy(new File(name));
+            } catch (Exception e) {
+                IOException ioe = new IOException();
+                ioe.initCause(e);
+                throw ioe;
+            }
+        }
+        if (remainingDeployments.size() > 0) {
+            log.severe("Failed to undeploy these artifacts: " + remainingDeployments);
+        }
+        failedUndeployments.clear();
+    }
+
+    private void initProfileService(Server server) throws Exception {
+        Context ctx = server.getNamingContext();
+        contextInst.set(ctx);
+        profileService = (ProfileService) ctx.lookup("ProfileService");
+
+        deploymentManager = profileService.getDeploymentManager();
+
+        ProfileKey defaultKey = new ProfileKey(DEFAULT_PROFILE_KEY_NAME);
+
+        deploymentManager.loadProfile(defaultKey);
+    }
 
    /*
     * Internal Helpers for Creating and Configuring ServerManager and Server.
     */
-   
-   private ServerManager createAndConfigureServerManager()
-   {
-      ServerManager manager = new ArquillianServerManager(
+
+    private ServerManager createAndConfigureServerManager() {
+        ServerManager manager = new ArquillianServerManager(
             configuration.getStartupTimeoutInSeconds(),
             configuration.getShutdownTimeoutInSeconds()
-      );
-      if(configuration.getJbossHome() != null) 
-      {
-         manager.setJbossHome(configuration.getJbossHome());
-      }
-      if(configuration.getJavaHome() != null) 
-      {
-         manager.setJavaHome(configuration.getJavaHome());
-      }
-      manager.addServer(createAndConfigureServer());
-      return manager;
-   }
+        );
+        if (configuration.getJbossHome() != null) {
+            manager.setJbossHome(configuration.getJbossHome());
+        }
+        if (configuration.getJavaHome() != null) {
+            manager.setJavaHome(configuration.getJavaHome());
+        }
+        manager.addServer(createAndConfigureServer());
+        return manager;
+    }
 
-   private Server createAndConfigureServer()
-   {
-      Server server = new Server();
-      server.setName(configuration.getProfileName());
-      server.setHttpPort(httpPort());
-      server.setRmiPort(rmiPort());
-      server.setHost(configuration.getBindAddress());
-      server.setHasWebServer(!configuration.isUseRmiPortForAliveCheck());
-      
-      server.setUsername("admin");
-      server.setPassword("admin");
-      
-      if (configuration.getPartition() != null) {
-          server.setPartition(configuration.getPartition());
-      }
-      else {
-          server.setPartition(Long.toHexString(System.currentTimeMillis()));
-      }
+    private Server createAndConfigureServer() {
+        Server server = new Server();
+        server.setName(configuration.getProfileName());
+        server.setHttpPort(httpPort());
+        server.setRmiPort(rmiPort());
+        server.setHost(configuration.getBindAddress());
+        server.setHasWebServer(!configuration.isUseRmiPortForAliveCheck());
 
-      // Set server's JVM arguments
-      setServerVMArgs(server, javaVmArguments());
+        server.setUsername("admin");
+        server.setPassword("admin");
 
-      // Set server's system properties
-      Property prop = new Property();
-      prop.setKey("jbosstest.udp.ip_ttl");
-      prop.setValue("0");
-      server.addSysProperty(prop);
-      prop = new Property();
-      prop.setKey("java.endorsed.dirs");
-      prop.setValue(new File(configuration.getJbossHome(), "lib/endorsed").getAbsolutePath());
-      server.addSysProperty(prop);
-      
-      return server;
-   }
+        if (configuration.getPartition() != null) {
+            server.setPartition(configuration.getPartition());
+        } else {
+            server.setPartition(Long.toHexString(System.currentTimeMillis()));
+        }
 
-   private int httpPort()
-   {
-      JBossBindingSet jbossBindingSet = getJBossBindingSet();
-      if (jbossBindingSet == null)
-         return configuration.getHttpPort();
+        // Set server's JVM arguments
+        setServerVMArgs(server, javaVmArguments());
 
-      return jbossBindingSet.getHttpPort();
-   }
+        // Set server's system properties
+        Property prop = new Property();
+        prop.setKey("jbosstest.udp.ip_ttl");
+        prop.setValue("0");
+        server.addSysProperty(prop);
+        prop = new Property();
+        prop.setKey("java.endorsed.dirs");
+        prop.setValue(new File(configuration.getJbossHome(), "lib/endorsed").getAbsolutePath());
+        server.addSysProperty(prop);
 
-   private int rmiPort()
-   {
-      JBossBindingSet jbossBindingSet = getJBossBindingSet();
-      if (jbossBindingSet == null)
-         return configuration.getRmiPort();
+        return server;
+    }
 
-      return jbossBindingSet.getRmiPort();
-   }
+    private int httpPort() {
+        JBossBindingSet jbossBindingSet = getJBossBindingSet();
+        if (jbossBindingSet == null)
+            return configuration.getHttpPort();
 
-   private JBossBindingSet getJBossBindingSet()
-   {
-      return JBossBindingSet.getBindingSet(configuration.getPortBindingSet());
-   }
+        return jbossBindingSet.getHttpPort();
+    }
 
-   private String javaVmArguments()
-   {
-      String javaVmArguments = configuration.getJavaVmArguments();
-      if (configuration.getPortBindingSet() != null)
-      {
-         javaVmArguments += " -Djboss.service.binding.set=" + configuration.getPortBindingSet();
-      }
-      return javaVmArguments;
-   }
+    private int rmiPort() {
+        JBossBindingSet jbossBindingSet = getJBossBindingSet();
+        if (jbossBindingSet == null)
+            return configuration.getRmiPort();
 
-   private void setServerVMArgs(Server server, String arguments)
-   {
-      for(String argument: arguments.split(" "))
-      {
-         Argument arg = new Argument();
-         arg.setValue(argument);
-         server.addJvmArg(arg);
-      }
-   }
+        return jbossBindingSet.getRmiPort();
+    }
+
+    private JBossBindingSet getJBossBindingSet() {
+        return JBossBindingSet.getBindingSet(configuration.getPortBindingSet());
+    }
+
+    private String javaVmArguments() {
+        String javaVmArguments = configuration.getJavaVmArguments();
+        if (configuration.getPortBindingSet() != null) {
+            javaVmArguments += " -Djboss.service.binding.set=" + configuration.getPortBindingSet();
+        }
+        return javaVmArguments;
+    }
+
+    private void setServerVMArgs(Server server, String arguments) {
+        for (String argument : arguments.split(" ")) {
+            Argument arg = new Argument();
+            arg.setValue(argument);
+            server.addJvmArg(arg);
+        }
+    }
 }

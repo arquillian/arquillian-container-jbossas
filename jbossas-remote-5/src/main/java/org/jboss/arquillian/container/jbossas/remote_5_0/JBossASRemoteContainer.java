@@ -51,221 +51,176 @@ import org.jboss.virtual.VFS;
  * @author <a href="mailto:aslak@conduct.no">Aslak Knutsen</a>
  * @version $Revision: $
  */
-public class JBossASRemoteContainer implements DeployableContainer<JBossASConfiguration>
-{
-   private final List<String> failedUndeployments = new ArrayList<String>();
-   private ProfileService profileService;
-   private DeploymentManager deploymentManager;
-   private MBeanServerConnection serverConnection;
+public class JBossASRemoteContainer implements DeployableContainer<JBossASConfiguration> {
+    private final List<String> failedUndeployments = new ArrayList<String>();
+    private ProfileService profileService;
+    private DeploymentManager deploymentManager;
+    private MBeanServerConnection serverConnection;
 
-   private JBossASConfiguration configuration;
+    private JBossASConfiguration configuration;
 
-   @Inject @ContainerScoped
-   private InstanceProducer<Context> contextInst;
-   
-   @Override
-   public ProtocolDescription getDefaultProtocol()
-   {
-      return new ProtocolDescription("Servlet 2.5");
-   }
-   
-   @Override
-   public Class<JBossASConfiguration> getConfigurationClass()
-   {
-      return JBossASConfiguration.class;
-   }
-   
-   @Override
-   public void setup(JBossASConfiguration configuration)
-   {
-      this.configuration = configuration;
-   }
-   
-   @Override
-   public void start() throws LifecycleException
-   {
-      try 
-      {
-         initDeploymentManager();
-      } 
-      catch (Exception e) 
-      {
-         throw new LifecycleException("Could not connect to container", e);
-      }
-   }
-   
-   @Override
-   public void stop() throws LifecycleException
-   {
-      try 
-      {
-         removeFailedUnDeployments();
-      } 
-      catch (Exception e) 
-      {
-         throw new LifecycleException("Could not clean up", e);
-      }
-   }
+    @Inject @ContainerScoped
+    private InstanceProducer<Context> contextInst;
 
-   @Override
-   public void deploy(Descriptor descriptor) throws DeploymentException
-   {
-      String deploymentName = descriptor.getDescriptorName();
-      URL deploymentUrl = ShrinkWrapUtil.toURL(descriptor);
+    @Override
+    public ProtocolDescription getDefaultProtocol() {
+        return new ProtocolDescription("Servlet 2.5");
+    }
 
-      deploy(deploymentName, deploymentUrl);
-   }
-   
-   @Override
-   public void undeploy(Descriptor descriptor) throws DeploymentException
-   {
-      undeploy(descriptor.getDescriptorName());
-   }
+    @Override
+    public Class<JBossASConfiguration> getConfigurationClass() {
+        return JBossASConfiguration.class;
+    }
 
-   @Override
-   public ProtocolMetaData deploy(final Archive<?> archive) throws DeploymentException
-   {
-      String deploymentName = archive.getName();
-      URL deploymentUrl = ShrinkWrapUtil.toURL(archive);
+    @Override
+    public void setup(JBossASConfiguration configuration) {
+        this.configuration = configuration;
+    }
 
-      deploy(deploymentName, deploymentUrl);
-      
-      try
-      {
-         return ManagementViewParser.parse(deploymentName, getServerConnection());
-      }
-      catch (Exception e) 
-      {
-         throw new DeploymentException("Could not extract deployment metadata", e);
-      }
-   }
+    @Override
+    public void start() throws LifecycleException {
+        try {
+            initDeploymentManager();
+        } catch (Exception e) {
+            throw new LifecycleException("Could not connect to container", e);
+        }
+    }
 
-   @Override
-   public void undeploy(final Archive<?> archive) throws DeploymentException
-   {
-      undeploy(archive.getName());
-   }
+    @Override
+    public void stop() throws LifecycleException {
+        try {
+            removeFailedUnDeployments();
+        } catch (Exception e) {
+            throw new LifecycleException("Could not clean up", e);
+        }
+    }
 
-   private void deploy(String deploymentName, URL url) throws DeploymentException
-   {
-      Exception failure = null;
-      try
-      {
-         DeploymentProgress distribute = deploymentManager.distribute(deploymentName, DeploymentPhase.APPLICATION, url, true);
-         distribute.run();
-         DeploymentStatus uploadStatus = distribute.getDeploymentStatus(); 
-         if(uploadStatus.isFailed()) 
-         {
-            failure = uploadStatus.getFailure();
-            undeploy(deploymentName);
-         } 
-         else 
-         {
-            DeploymentProgress progress = deploymentManager.start(DeploymentPhase.APPLICATION, deploymentName);
-            progress.run();
-            DeploymentStatus status = progress.getDeploymentStatus();
-            if (status.isFailed())
-            {
-               failure = status.getFailure();
-               undeploy(deploymentName);
+    @Override
+    public void deploy(Descriptor descriptor) throws DeploymentException {
+        String deploymentName = descriptor.getDescriptorName();
+        URL deploymentUrl = ShrinkWrapUtil.toURL(descriptor);
+
+        deploy(deploymentName, deploymentUrl);
+    }
+
+    @Override
+    public void undeploy(Descriptor descriptor) throws DeploymentException {
+        undeploy(descriptor.getDescriptorName());
+    }
+
+    @Override
+    public ProtocolMetaData deploy(final Archive<?> archive) throws DeploymentException {
+        String deploymentName = archive.getName();
+        URL deploymentUrl = ShrinkWrapUtil.toURL(archive);
+
+        deploy(deploymentName, deploymentUrl);
+
+        try {
+            return ManagementViewParser.parse(deploymentName, getServerConnection());
+        } catch (Exception e) {
+            throw new DeploymentException("Could not extract deployment metadata", e);
+        }
+    }
+
+    @Override
+    public void undeploy(final Archive<?> archive) throws DeploymentException {
+        undeploy(archive.getName());
+    }
+
+    private void deploy(String deploymentName, URL url) throws DeploymentException {
+        Exception failure = null;
+        try {
+            DeploymentProgress distribute =
+                deploymentManager.distribute(deploymentName, DeploymentPhase.APPLICATION, url, true);
+            distribute.run();
+            DeploymentStatus uploadStatus = distribute.getDeploymentStatus();
+            if (uploadStatus.isFailed()) {
+                failure = uploadStatus.getFailure();
+                undeploy(deploymentName);
+            } else {
+                DeploymentProgress progress = deploymentManager.start(DeploymentPhase.APPLICATION, deploymentName);
+                progress.run();
+                DeploymentStatus status = progress.getDeploymentStatus();
+                if (status.isFailed()) {
+                    failure = status.getFailure();
+                    undeploy(deploymentName);
+                }
             }
-         }
-      }
-      catch (Exception e)
-      {
-         throw new DeploymentException("Could not deploy " + deploymentName, e);
-      }
-      if (failure != null)
-      {
-         throw new DeploymentException("Failed to deploy " + deploymentName, failure);
-      }
-   }
+        } catch (Exception e) {
+            throw new DeploymentException("Could not deploy " + deploymentName, e);
+        }
+        if (failure != null) {
+            throw new DeploymentException("Failed to deploy " + deploymentName, failure);
+        }
+    }
 
-   private void undeploy(String name) throws DeploymentException
-   {
-      try
-      {
-         DeploymentProgress stopProgress = deploymentManager.stop(DeploymentPhase.APPLICATION, name);
-         stopProgress.run();
+    private void undeploy(String name) throws DeploymentException {
+        try {
+            DeploymentProgress stopProgress = deploymentManager.stop(DeploymentPhase.APPLICATION, name);
+            stopProgress.run();
 
-         DeploymentProgress undeployProgress = deploymentManager.undeploy(DeploymentPhase.APPLICATION, name);
-         undeployProgress.run();
-         if (undeployProgress.getDeploymentStatus().isFailed())
-         {
-            failedUndeployments.add(name);
-         }
-      }
-      catch (Exception e)
-      {
-         throw new DeploymentException("Could not undeploy " + name, e);
-      }
-   }
-
-   private void initDeploymentManager() throws Exception 
-   {
-      String profileName = configuration.getProfileName();
-      Context ctx = createContext();
-      profileService = (ProfileService) ctx.lookup("ProfileService");
-      deploymentManager = profileService.getDeploymentManager();
-      ProfileKey defaultKey = new ProfileKey(profileName);
-      deploymentManager.loadProfile(defaultKey, false);
-      VFS.init();
-   }
-   
-   private Context createContext() throws Exception
-   {
-      if(contextInst.get() == null)
-      {
-         Properties props = new Properties();
-         props.put(InitialContext.INITIAL_CONTEXT_FACTORY, configuration.getContextFactory());
-         props.put(InitialContext.URL_PKG_PREFIXES, configuration.getUrlPkgPrefix());
-         props.put(InitialContext.PROVIDER_URL, configuration.getProviderUrl());
-         contextInst.set(new InitialContext(props));
-      }
-      return contextInst.get();
-   }
-   
-   public MBeanServerConnection getServerConnection() throws Exception
-   {
-      String adapterName = "jmx/rmi/RMIAdaptor";
-      if ( serverConnection == null)
-      {
-         Object obj = createContext().lookup(adapterName);
-         if ( obj == null )
-         {
-            throw new NameNotFoundException("Object " + adapterName + " not found.");
-         }
-
-         serverConnection = ((MBeanServerConnection) obj);
-      }
-      return serverConnection;
-   }
-
-   private void removeFailedUnDeployments() throws IOException
-   {
-      List<String> remainingDeployments = new ArrayList<String>();
-      for (String name : failedUndeployments)
-      {
-         try
-         {
             DeploymentProgress undeployProgress = deploymentManager.undeploy(DeploymentPhase.APPLICATION, name);
             undeployProgress.run();
-            if (undeployProgress.getDeploymentStatus().isFailed())
-            {
-               remainingDeployments.add(name);
+            if (undeployProgress.getDeploymentStatus().isFailed()) {
+                failedUndeployments.add(name);
             }
-         }
-         catch (Exception e)
-         {
-            IOException ioe = new IOException();
-            ioe.initCause(e);
-            throw ioe;
-         }
-      }
-      if (remainingDeployments.size() > 0)
-      {
-         //log.error("Failed to undeploy these artifacts: " + remainingDeployments);
-      }
-      failedUndeployments.clear();
-   }
+        } catch (Exception e) {
+            throw new DeploymentException("Could not undeploy " + name, e);
+        }
+    }
+
+    private void initDeploymentManager() throws Exception {
+        String profileName = configuration.getProfileName();
+        Context ctx = createContext();
+        profileService = (ProfileService) ctx.lookup("ProfileService");
+        deploymentManager = profileService.getDeploymentManager();
+        ProfileKey defaultKey = new ProfileKey(profileName);
+        deploymentManager.loadProfile(defaultKey, false);
+        VFS.init();
+    }
+
+    private Context createContext() throws Exception {
+        if (contextInst.get() == null) {
+            Properties props = new Properties();
+            props.put(InitialContext.INITIAL_CONTEXT_FACTORY, configuration.getContextFactory());
+            props.put(InitialContext.URL_PKG_PREFIXES, configuration.getUrlPkgPrefix());
+            props.put(InitialContext.PROVIDER_URL, configuration.getProviderUrl());
+            contextInst.set(new InitialContext(props));
+        }
+        return contextInst.get();
+    }
+
+    public MBeanServerConnection getServerConnection() throws Exception {
+        String adapterName = "jmx/rmi/RMIAdaptor";
+        if (serverConnection == null) {
+            Object obj = createContext().lookup(adapterName);
+            if (obj == null) {
+                throw new NameNotFoundException("Object " + adapterName + " not found.");
+            }
+
+            serverConnection = ((MBeanServerConnection) obj);
+        }
+        return serverConnection;
+    }
+
+    private void removeFailedUnDeployments() throws IOException {
+        List<String> remainingDeployments = new ArrayList<String>();
+        for (String name : failedUndeployments) {
+            try {
+                DeploymentProgress undeployProgress = deploymentManager.undeploy(DeploymentPhase.APPLICATION, name);
+                undeployProgress.run();
+                if (undeployProgress.getDeploymentStatus().isFailed()) {
+                    remainingDeployments.add(name);
+                }
+            } catch (Exception e) {
+                IOException ioe = new IOException();
+                ioe.initCause(e);
+                throw ioe;
+            }
+        }
+        if (remainingDeployments.size() > 0) {
+            //log.error("Failed to undeploy these artifacts: " + remainingDeployments);
+        }
+        failedUndeployments.clear();
+    }
 }
