@@ -28,7 +28,6 @@
 
     <!-- Override the managed version from jboss-as-depchain-->
     <version.shrinkwrap_shrinkwrap>1.0.0-beta-3</version.shrinkwrap_shrinkwrap>
-    <version.junit>4.8.1</version.junit>
 
   </properties>
 
@@ -112,7 +111,7 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>${version.junit}</version>
+      <version>4.12</version>
       <scope>test</scope>
     </dependency>
 

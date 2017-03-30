@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.jboss</groupId>
     <artifactId>jboss-parent</artifactId>
-    <version>8</version>
+    <version>22</version>
     <relativePath/>
   </parent>
 
@@ -31,12 +31,12 @@
   <properties>
 
     <!-- Versioning -->
-    <version.arquillian_core>1.0.1.Final</version.arquillian_core>
+    <version.arquillian_core>1.1.13.Final</version.arquillian_core>
 
     <!-- override from parent -->
-    <maven.compiler.argument.target>1.5</maven.compiler.argument.target>
-    <maven.compiler.argument.source>1.5</maven.compiler.argument.source>
-
+    <maven.compiler.target>1.5</maven.compiler.target>
+    <maven.compiler.source>1.5</maven.compiler.source>
+    <maven.min.version>3.0.5</maven.min.version>
   </properties>
 
   <dependencyManagement>
