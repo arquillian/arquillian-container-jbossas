@@ -1,108 +1,109 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-    <!-- Parent -->
-    <parent>
-        <groupId>org.jboss</groupId>
-        <artifactId>jboss-parent</artifactId>
-        <version>8</version>
-        <relativePath />
-    </parent>
+  <!-- Parent -->
+  <parent>
+    <groupId>org.jboss</groupId>
+    <artifactId>jboss-parent</artifactId>
+    <version>8</version>
+    <relativePath/>
+  </parent>
 
-    <!-- Model Version -->
-    <modelVersion>4.0.0</modelVersion>
+  <!-- Model Version -->
+  <modelVersion>4.0.0</modelVersion>
 
-    <!-- Artifact Configuration -->
-    <groupId>org.jboss.arquillian.container</groupId>
-    <artifactId>arquillian-parent-jbossas</artifactId>
-    <version>1.0.0.Final-SNAPSHOT</version>
-    <packaging>pom</packaging>
-    <name>Arquillian Container Parent JBoss AS</name>
-    <description>JBoss AS Container integrations for the Arquillian Project</description>
+  <!-- Artifact Configuration -->
+  <groupId>org.jboss.arquillian.container</groupId>
+  <artifactId>arquillian-parent-jbossas</artifactId>
+  <version>1.0.0.Final-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <name>Arquillian Container Parent JBoss AS</name>
+  <description>JBoss AS Container integrations for the Arquillian Project</description>
 
-    <scm>
-        <connection>scm:git:git://git@github.com:arquillian/arquillian-container-jbossas.git</connection>
-        <developerConnection>scm:git:ssh://github.com/arquillian/arquillian-container-jbossas.git</developerConnection>
-        <url>git://github.com/arquillian/arquillian-container-jbossas.git</url>
-    </scm>
+  <scm>
+    <connection>scm:git:git://git@github.com:arquillian/arquillian-container-jbossas.git</connection>
+    <developerConnection>scm:git:ssh://github.com/arquillian/arquillian-container-jbossas.git</developerConnection>
+    <url>git://github.com/arquillian/arquillian-container-jbossas.git</url>
+  </scm>
 
-    <!-- Properties -->
-    <properties>
+  <!-- Properties -->
+  <properties>
 
-        <!-- Versioning -->
-        <version.arquillian_core>1.0.1.Final</version.arquillian_core>
+    <!-- Versioning -->
+    <version.arquillian_core>1.0.1.Final</version.arquillian_core>
 
-        <!-- override from parent -->
-        <maven.compiler.argument.target>1.5</maven.compiler.argument.target>
-        <maven.compiler.argument.source>1.5</maven.compiler.argument.source>
+    <!-- override from parent -->
+    <maven.compiler.argument.target>1.5</maven.compiler.argument.target>
+    <maven.compiler.argument.source>1.5</maven.compiler.argument.source>
 
-    </properties>
+  </properties>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.jboss.arquillian</groupId>
-                <artifactId>arquillian-bom</artifactId>
-                <version>${version.arquillian_core}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss.arquillian</groupId>
-                <artifactId>arquillian-build</artifactId>
-                <version>${version.arquillian_core}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.jboss.arquillian</groupId>
+        <artifactId>arquillian-bom</artifactId>
+        <version>${version.arquillian_core}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.arquillian</groupId>
+        <artifactId>arquillian-build</artifactId>
+        <version>${version.arquillian_core}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
-    <build>
-        <plugins>
-            <plugin>
-                <artifactId>maven-release-plugin</artifactId>
-                <configuration>
-                    <autoVersionSubmodules>true</autoVersionSubmodules>
-                    <pushChanges>false</pushChanges>
-                    <localCheckout>true</localCheckout>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>animal-sniffer-maven-plugin</artifactId>
-                <version>1.7</version>
-                <executions>
-                    <execution>
-                        <id>signature-check</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <signature>
-                        <groupId>org.codehaus.mojo.signature</groupId>
-                        <artifactId>java15</artifactId>
-                        <version>1.0</version>
-                    </signature>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-release-plugin</artifactId>
+        <configuration>
+          <autoVersionSubmodules>true</autoVersionSubmodules>
+          <pushChanges>false</pushChanges>
+          <localCheckout>true</localCheckout>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>animal-sniffer-maven-plugin</artifactId>
+        <version>1.7</version>
+        <executions>
+          <execution>
+            <id>signature-check</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <signature>
+            <groupId>org.codehaus.mojo.signature</groupId>
+            <artifactId>java15</artifactId>
+            <version>1.0</version>
+          </signature>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
-    <modules>
-        <module>jbossas-managed-4.2</module>
-        <module>jbossas-remote-4.2</module>
+  <modules>
+    <module>jbossas-managed-4.2</module>
+    <module>jbossas-remote-4.2</module>
 
-        <module>jbossas-remote-5</module>
+    <module>jbossas-remote-5</module>
 
-        <module>jbossas-managed-5.1</module>
-        <module>jbossas-remote-5.1</module>
+    <module>jbossas-managed-5.1</module>
+    <module>jbossas-remote-5.1</module>
 
-        <module>jbossas-embedded-6</module>
-        <module>jbossas-managed-6</module>
-        <module>jbossas-remote-6</module>
-    </modules>
+    <module>jbossas-embedded-6</module>
+    <module>jbossas-managed-6</module>
+    <module>jbossas-remote-6</module>
+  </modules>
 
 </project>
