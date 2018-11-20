@@ -24,7 +24,7 @@
 
     <!-- Versioning -->
     <version.org.jboss.jbossas>5.1.0.GA</version.org.jboss.jbossas>
-    <version.org.jboss.jbossas_server-manager>1.0.3.GA</version.org.jboss.jbossas_server-manager>
+    <version.org.jboss.jbossas_server-manager>1.0.4.Final</version.org.jboss.jbossas_server-manager>
     <version.ejb3_api>3.1.0</version.ejb3_api>
 
   </properties>

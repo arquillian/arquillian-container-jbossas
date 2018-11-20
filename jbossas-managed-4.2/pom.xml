@@ -23,7 +23,7 @@
 
     <!-- Versioning -->
     <version.org.jboss.jbossas>4.2.3.GA</version.org.jboss.jbossas>
-    <version.org.jboss.jbossas_server-manager>1.0.3.GA</version.org.jboss.jbossas_server-manager>
+    <version.org.jboss.jbossas_server-manager>1.0.4.Final</version.org.jboss.jbossas_server-manager>
     <version.dom4j>1.6.1</version.dom4j>
     <version.ejb_api>3.0</version.ejb_api>
   </properties>
