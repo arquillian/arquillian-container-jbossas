@@ -31,7 +31,7 @@
   <properties>
 
     <!-- Versioning -->
-    <version.arquillian_core>1.1.13.Final</version.arquillian_core>
+    <version.arquillian_core>1.5.0.Final</version.arquillian_core>
 
     <!-- override from parent -->
     <maven.compiler.target>1.5</maven.compiler.target>
